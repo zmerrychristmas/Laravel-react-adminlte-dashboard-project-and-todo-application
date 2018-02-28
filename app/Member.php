@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
 {
+    protected $_table = 'member';
     /**
      * The attributes that are mass assignable.
      *
@@ -17,6 +18,6 @@ class Member extends Model
 
     public function projects()
     {
-
+        return $this->belongsToMany('App\Project');
     }
 }
