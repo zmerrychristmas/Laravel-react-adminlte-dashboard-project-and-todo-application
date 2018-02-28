@@ -13,7 +13,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projects = Project::all();
+        return response()->json($projects);
     }
 
     /**
@@ -23,7 +24,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -34,7 +35,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $project = new Project([
+          'name' => $request->get('name'),
+          'information' => $request->get('information'),
+          'deadline' => $request->get('deadline'),
+          'type' => $request->get('type'),
+          'status' => $request->get('status')
+        ]);
+        $project->save();
+
+        return response()->json('Project Added Successfully.');
     }
 
     /**
@@ -56,7 +66,8 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        //
+        $project = Project::find($id);
+        return response()->json($project);
     }
 
     /**
@@ -68,7 +79,15 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $project = Project::find($id);
+        $project->name = $request->get('name');
+        $project->information = $request->get('information');
+        $project->deadline = $request->get('deadline');
+        $project->type = $request->get('type');
+        $project->status = $request->get('status');
+        $project->save();
+
+        return response()->json('Product Updated Successfully.');
     }
 
     /**
@@ -79,6 +98,9 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $project = Project::find($id);
+      $project->delete();
+
+      return response()->json('Project Deleted Successfully.');
     }
 }
