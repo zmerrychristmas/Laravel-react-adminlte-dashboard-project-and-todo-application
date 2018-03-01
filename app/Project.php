@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    protected $_table = 'project';
+    protected $table = 'project';
     /**
      * The attributes that are mass assignable.
      * @var array
@@ -17,6 +17,6 @@ class Project extends Model
 
     public function members()
     {
-        return $this->belongsToMany('App\Member');
+        return $this->belongsToMany('App\Member', 'project_member');
     }
 }

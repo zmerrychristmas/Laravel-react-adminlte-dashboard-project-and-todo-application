@@ -19,7 +19,7 @@ class CreateMemberTable extends Migration
             $table->text('information');
             $table->string('phone');
             $table->datetime('date_of_birth');
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->string('position');
             $table->smallInteger('gender');
             $table->timestamps();

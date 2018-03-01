@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Project;
+use App\Member;
 
 class ProjectController extends Controller
 {
@@ -15,16 +18,6 @@ class ProjectController extends Controller
     {
         $projects = Project::all();
         return response()->json($projects);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
     }
 
     /**
@@ -55,7 +48,8 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //
+        $project = Project::find($id);
+        return response()->json($project);
     }
 
     /**
@@ -102,5 +96,25 @@ class ProjectController extends Controller
       $project->delete();
 
       return response()->json('Project Deleted Successfully.');
+    }
+
+    public function assignMember(Request $request)
+    {
+        $idMember = $request->get('id_member');
+        $idProject = $request->get('id_project');
+        $project = Project::find($idProject);
+        $member = Member::find($idMember);
+        if ($member && $project) {
+            DB::table('project_member')->insert(
+            [
+                'project_id' => $idProject,
+                'member_id' => $idMember,
+                'role' => $request->get('role'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            return response()->json('Assign Successfully.');
+        }
+        return response()->json("Faild to assign, check your's input");
     }
 }

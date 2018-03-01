@@ -3,27 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Member;
 
 class MemberController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $members = Member::all();
+        return response()->json($members);
     }
 
     /**
@@ -34,7 +26,18 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $member = new Member([
+          'name' => $request->get('name'),
+          'information' => $request->get('information'),
+          'date_of_birth' => $request->get('date_of_birth'),
+          'position' => $request->get('position'),
+          'phone' => $request->get('phone'),
+          'gender' => $request->get('gender'),
+          'avatar' => ''
+        ]);
+        $member->save();
+
+        return response()->json('Member Added Successfully.');
     }
 
     /**
@@ -45,7 +48,8 @@ class MemberController extends Controller
      */
     public function show($id)
     {
-        //
+        $member = Member::find($id);
+        return response()->json($member);
     }
 
     /**
@@ -56,7 +60,8 @@ class MemberController extends Controller
      */
     public function edit($id)
     {
-        //
+        $member = Member::find($id);
+        return response()->json($member);
     }
 
     /**
@@ -68,7 +73,16 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $member = Member::find($id);
+        $member->name = $request->get('name');
+        $member->information = $request->get('information');
+        $member->date_of_birth = $request->get('date_of_birth');
+        $member->position = $request->get('position');
+        $member->phone = $request->get('phone');
+        $member->gender = $request->get('gender');
+        $member->save();
+
+        return response()->json('Member Updated Successfully.');
     }
 
     /**
@@ -79,6 +93,14 @@ class MemberController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $member = Member::find($id);
+      $member->delete();
+
+      return response()->json('Member Deleted Successfully.');
+    }
+
+    public function members()
+    {
+        return view('member/index', []);
     }
 }

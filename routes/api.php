@@ -17,3 +17,28 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::resource('products', 'ProductController');
+
+// Project CRUD
+Route::get('projects', 'ProjectController@index');
+
+Route::get('projects/{project}', 'ProjectController@show');
+
+Route::post('projects','ProjectController@store');
+
+Route::put('projects/{project}','ProjectController@update');
+
+Route::delete('projects/{project}', 'ProjectController@destroy');
+
+// Member CRUD
+Route::get('members', 'MemberController@index');
+
+Route::get('members/{member}', 'MemberController@show');
+
+Route::post('members','MemberController@store');
+
+Route::put('members/{member}','MemberController@update');
+
+Route::delete('members/{member}', 'MemberController@destroy');
+
+// assign to project
+Route::Post('projects/assign', 'ProjectController@assignMember');
