@@ -11,11 +11,11 @@ class TableRow extends Component {
     event.preventDefault();
     let uri = MyGlobleSetting.url + `/api/members/${this.props.obj.id}`;
     axios.delete(uri);
-    browserHistory.push('/display-item');
+    browserHistory.push('/');
   }
   render() {
     return (
-      <tr><td>{this.props.obj.avatar}</td>
+      <tr><td><img src={this.props.obj.avatar} className="img-rounded"/></td>
       <td>{this.props.obj.name}</td>
       <td>{this.props.obj.phone}</td>
       <td>{this.props.obj.date_of_birth}</td>

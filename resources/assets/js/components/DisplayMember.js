@@ -20,7 +20,7 @@ class DisplayMember extends Component {
  }
  tabRow(){
    if(this.state.members instanceof Array){
-     return this.state.members.map(function(object, i){
+     return this.state.members.map((object, i) => {
        return <TableRow obj={object} key={i} />;
      })
    }

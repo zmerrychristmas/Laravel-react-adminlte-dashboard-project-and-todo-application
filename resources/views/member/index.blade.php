@@ -14,6 +14,11 @@
 @stop
 
 @section('css')
+    <style>
+        .img-rounded {
+            height: 65px;
+        }
+    </style>
     <link rel="stylesheet" href="/css/admin_custom.css">
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
 @stop

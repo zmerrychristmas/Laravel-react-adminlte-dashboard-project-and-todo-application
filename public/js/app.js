@@ -14394,7 +14394,7 @@ var TableRow = function (_Component) {
       event.preventDefault();
       var uri = __WEBPACK_IMPORTED_MODULE_2__MyGlobleSetting__["a" /* default */].url + ('/api/members/' + this.props.obj.id);
       axios.delete(uri);
-      __WEBPACK_IMPORTED_MODULE_1_react_router__["d" /* browserHistory */].push('/display-item');
+      __WEBPACK_IMPORTED_MODULE_1_react_router__["d" /* browserHistory */].push('/');
     }
   }, {
     key: 'render',
@@ -14405,7 +14405,7 @@ var TableRow = function (_Component) {
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'td',
           null,
-          this.props.obj.avatar
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { src: this.props.obj.avatar, className: 'img-rounded' })
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'td',
@@ -58711,40 +58711,91 @@ var CreateMember = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (CreateMember.__proto__ || Object.getPrototypeOf(CreateMember)).call(this, props));
 
-    _this.state = { productTitle: '', productBody: '' };
+    _this.state = { memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null };
 
-    _this.handleChange1 = _this.handleChange1.bind(_this);
-    _this.handleChange2 = _this.handleChange2.bind(_this);
+    _this.handleChangeName = _this.handleChangeName.bind(_this);
+    _this.handleChangeInformation = _this.handleChangeInformation.bind(_this);
+    _this.handleChangePhone = _this.handleChangePhone.bind(_this);
+    _this.handleChangeDob = _this.handleChangeDob.bind(_this);
+    _this.handleChangePosition = _this.handleChangePosition.bind(_this);
+    _this.handleChangeGender = _this.handleChangeGender.bind(_this);
+    _this.handleChangeAvatar = _this.handleChangeAvatar.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
 
     return _this;
   }
 
   _createClass(CreateMember, [{
-    key: 'handleChange1',
-    value: function handleChange1(e) {
+    key: 'handleChangeName',
+    value: function handleChangeName(e) {
       this.setState({
-        productTitle: e.target.value
+        memberName: e.target.value
       });
     }
   }, {
-    key: 'handleChange2',
-    value: function handleChange2(e) {
+    key: 'handleChangeInformation',
+    value: function handleChangeInformation(e) {
       this.setState({
-        productBody: e.target.value
+        memberInformation: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangePhone',
+    value: function handleChangePhone(e) {
+      this.setState({
+        memberPhone: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeDob',
+    value: function handleChangeDob(e) {
+      this.setState({
+        memberDob: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangePosition',
+    value: function handleChangePosition(e) {
+      this.setState({
+        memberPosition: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeGender',
+    value: function handleChangeGender(e) {
+      console.log(e.target);
+      this.setState({
+        memberGender: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeAvatar',
+    value: function handleChangeAvatar(e) {
+      console.log(e.target.files[0]);
+      this.setState({
+        memberAvatar: e.target.files[0]
       });
     }
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
       e.preventDefault();
-      var products = {
-        title: this.state.productTitle,
-        body: this.state.productBody
+      var formData = new FormData();
+      formData.append('name', this.state.memberName);
+      formData.append('information', this.state.memberInformation);
+      formData.append('avatar', this.state.memberAvatar);
+      formData.append('dob', this.state.memberDob);
+      formData.append('phone', this.state.memberPhone);
+      formData.append('position', this.state.memberPosition);
+      formData.append('gender', this.state.memberGender);
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
       };
-      var uri = __WEBPACK_IMPORTED_MODULE_2__MyGlobleSetting__["a" /* default */].url + '/api/products';
-      axios.post(uri, products).then(function (response) {
-        __WEBPACK_IMPORTED_MODULE_1_react_router__["d" /* browserHistory */].push('/display-item');
+      var uri = __WEBPACK_IMPORTED_MODULE_2__MyGlobleSetting__["a" /* default */].url + '/api/members';
+      axios.post(uri, formData, config).then(function (response) {
+        __WEBPACK_IMPORTED_MODULE_1_react_router__["d" /* browserHistory */].push('/');
       });
     }
   }, {
@@ -58755,51 +58806,167 @@ var CreateMember = function (_Component) {
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'form',
-          { onSubmit: this.handleSubmit },
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            'div',
-            { className: 'row' },
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              'div',
-              { className: 'col-md-6' },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'form-group' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                  'label',
-                  null,
-                  'Product Title:'
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', onChange: this.handleChange1 })
-              )
-            )
-          ),
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            'div',
-            { className: 'row' },
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              'div',
-              { className: 'col-md-6' },
-              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'form-group' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                  'label',
-                  null,
-                  'Product Body:'
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', { className: 'form-control col-md-6', onChange: this.handleChange2 })
-              )
-            )
-          ),
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+          { onSubmit: this.handleSubmit, className: 'form-horizontal', method: 'post', enctype: 'multipart/form-data' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'form-group' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              'button',
-              { className: 'btn btn-primary' },
-              'Add Product'
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'name' },
+              'Name:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', id: 'name', onChange: this.handleChangeName, name: 'name', placeholder: 'Enter name' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'name' },
+              'Avatar:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'file', onChange: this.handleChangeAvatar, ref: this.state.memberAvatar, className: 'form-control', id: 'avatar', name: 'avatar' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'information' },
+              'Information:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', { className: 'form-control', id: 'information', onChange: this.handleChangeInformation, name: 'information' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'phone' },
+              'Phone:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', onChange: this.handleChangePhone, className: 'form-control', id: 'phone', name: 'phone', placeholder: 'Enter Phone' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'date_of_birth' },
+              'Date of birth:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', onChange: this.handleChangeDob, id: 'date_of_birth', name: 'date_of_birth', placeholder: 'Enter Date of birth' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'position' },
+              'Position:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', name: 'position', id: 'position', onChange: this.handleChangePosition },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'intern' },
+                  'intern'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'junior' },
+                  'junior'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'senior' },
+                  'senior'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'pm' },
+                  'pm'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'ceo' },
+                  'ceo'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'cto' },
+                  'cto'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'bo' },
+                  'bo'
+                )
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'gender' },
+              'Gender:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', name: 'gender', onChange: this.handleChangeGender, id: 'gender' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '1' },
+                  'male'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '2' },
+                  'female'
+                )
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-offset-2 col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'button',
+                { type: 'submit', className: 'btn btn-default' },
+                'Submit'
+              )
             )
           )
         )
@@ -58975,9 +59142,14 @@ var UpdateMember = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (UpdateMember.__proto__ || Object.getPrototypeOf(UpdateMember)).call(this, props));
 
-    _this.state = { title: '', body: '' };
-    _this.handleChange1 = _this.handleChange1.bind(_this);
-    _this.handleChange2 = _this.handleChange2.bind(_this);
+    _this.state = { memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null };
+    _this.handleChangeName = _this.handleChangeName.bind(_this);
+    _this.handleChangeInformation = _this.handleChangeInformation.bind(_this);
+    _this.handleChangePhone = _this.handleChangePhone.bind(_this);
+    _this.handleChangeDob = _this.handleChangeDob.bind(_this);
+    _this.handleChangePosition = _this.handleChangePosition.bind(_this);
+    _this.handleChangeGender = _this.handleChangeGender.bind(_this);
+    _this.handleChangeAvatar = _this.handleChangeAvatar.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
     return _this;
   }
@@ -58987,24 +59159,61 @@ var UpdateMember = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(__WEBPACK_IMPORTED_MODULE_3__MyGlobleSetting__["a" /* default */].url + ('/api/products/' + this.props.params.id + '/edit')).then(function (response) {
-        _this2.setState({ title: response.data.title, body: response.data.body });
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(__WEBPACK_IMPORTED_MODULE_3__MyGlobleSetting__["a" /* default */].url + ('/api/members/' + this.props.params.id)).then(function (response) {
+        _this2.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, memberDob: response.data.date_of_birth, memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
       }).catch(function (error) {
         console.log(error);
       });
     }
   }, {
-    key: 'handleChange1',
-    value: function handleChange1(e) {
+    key: 'handleChangeName',
+    value: function handleChangeName(e) {
       this.setState({
-        title: e.target.value
+        memberName: e.target.value
       });
     }
   }, {
-    key: 'handleChange2',
-    value: function handleChange2(e) {
+    key: 'handleChangeInformation',
+    value: function handleChangeInformation(e) {
       this.setState({
-        body: e.target.value
+        memberInformation: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangePhone',
+    value: function handleChangePhone(e) {
+      this.setState({
+        memberPhone: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeDob',
+    value: function handleChangeDob(e) {
+      this.setState({
+        memberDob: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangePosition',
+    value: function handleChangePosition(e) {
+      this.setState({
+        memberPosition: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeGender',
+    value: function handleChangeGender(e) {
+      console.log(e.target);
+      this.setState({
+        memberGender: e.target.value
+      });
+    }
+  }, {
+    key: 'handleChangeAvatar',
+    value: function handleChangeAvatar(e) {
+      console.log(e.target.files[0]);
+      this.setState({
+        memberAvatar: e.target.files[0]
       });
     }
   }, {
@@ -59019,7 +59228,7 @@ var UpdateMember = function (_Component) {
       };
       var uri = __WEBPACK_IMPORTED_MODULE_3__MyGlobleSetting__["a" /* default */].url + '/api/products/' + this.props.params.id;
       __WEBPACK_IMPORTED_MODULE_1_axios___default.a.patch(uri, products).then(function (response) {
-        _this3.props.history.push('/display-item');
+        _this3.props.history.push('/');
       });
     }
   }, {
@@ -59030,38 +59239,171 @@ var UpdateMember = function (_Component) {
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'form',
-          { onSubmit: this.handleSubmit },
+          { onSubmit: this.handleSubmit, className: 'form-horizontal', method: 'post', enctype: 'multipart/form-data' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'form-group' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'label',
-              null,
-              'Product Title'
+              { className: 'control-label col-sm-2', htmlFor: 'name' },
+              'Name:'
             ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text',
-              className: 'form-control',
-              value: this.state.title,
-              onChange: this.handleChange1 })
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', value: this.state.memberName, className: 'form-control', id: 'name', onChange: this.handleChangeName, name: 'name', placeholder: 'Enter name' })
+            )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'form-group' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'label',
-              { name: 'product_body' },
-              'Product Body'
+              { className: 'control-label col-sm-2', htmlFor: 'name' },
+              'Avatar:'
             ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', { className: 'form-control',
-              onChange: this.handleChange2, value: this.state.body })
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'file', onChange: this.handleChangeAvatar, ref: this.state.memberAvatar, className: 'form-control', id: 'avatar', name: 'avatar' })
+            )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'form-group' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              'button',
-              { className: 'btn btn-primary' },
-              'Update'
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'information' },
+              'Information:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'textarea',
+                { className: 'form-control', id: 'information', onChange: this.handleChangeInformation, name: 'information' },
+                this.state.memberInformation
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'phone' },
+              'Phone:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', onChange: this.handleChangePhone, value: this.state.memberPhone, className: 'form-control', id: 'phone', name: 'phone', placeholder: 'Enter Phone' })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'date_of_birth' },
+              'Date of birth:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', onChange: this.handleChangeDob, id: 'date_of_birth', name: 'date_of_birth', placeholder: 'Enter Date of birth', value: this.state.memberDob })
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'position' },
+              'Position:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', value: this.state.memberPosition, name: 'position', id: 'position', onChange: this.handleChangePosition },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'intern' },
+                  'intern'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'junior' },
+                  'junior'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'senior' },
+                  'senior'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'pm' },
+                  'pm'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'ceo' },
+                  'ceo'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'cto' },
+                  'cto'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: 'bo' },
+                  'bo'
+                )
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              { className: 'control-label col-sm-2', htmlFor: 'gender' },
+              'Gender:'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', name: 'gender', value: this.state.memberGender, onChange: this.handleChangeGender, id: 'gender' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '1' },
+                  'male'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '2' },
+                  'female'
+                )
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'form-group' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-sm-offset-2 col-sm-10' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'button',
+                { type: 'submit', className: 'btn btn-default' },
+                'Update'
+              )
             )
           )
         )

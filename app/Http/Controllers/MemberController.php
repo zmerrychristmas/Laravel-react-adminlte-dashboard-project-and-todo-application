@@ -29,14 +29,24 @@ class MemberController extends Controller
         $member = new Member([
           'name' => $request->get('name'),
           'information' => $request->get('information'),
-          'date_of_birth' => $request->get('date_of_birth'),
+          'date_of_birth' => date("Y-m-d H:i:s", strtotime($request->get('d'))),
           'position' => $request->get('position'),
           'phone' => $request->get('phone'),
           'gender' => $request->get('gender'),
-          'avatar' => ''
+          'avatar' => 'images/default.png'
         ]);
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $file = $request->file('avatar');
+            $path = $request->file('avatar')->store('public/images');
+            if ($path) {
+                $path = explode('/', $path);
+                $path = isset($path[2]) ? $path[2] : '';
+                if ($path) {
+                    $member->avatar = 'storage/images/' .$path;
+                }
+            }
+        }
         $member->save();
-
         return response()->json('Member Added Successfully.');
     }
 
