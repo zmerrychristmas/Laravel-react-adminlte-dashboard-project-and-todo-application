@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::get('/members', 'MemberController@members');
+Route::get('/members/new', 'MemberController@newMember');
+Route::get('/members/edit/{id}', 'MemberController@editMember');

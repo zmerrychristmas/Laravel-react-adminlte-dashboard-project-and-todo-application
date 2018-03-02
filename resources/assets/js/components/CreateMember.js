@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 
-class CreateProduct extends Component {
+class CreateMember extends Component {
   constructor(props){
     super(props);
     this.state = {productTitle: '', productBody: ''};
@@ -37,7 +37,6 @@ class CreateProduct extends Component {
     render() {
       return (
       <div>
-        <h1>Create Product</h1>
         <form onSubmit={this.handleSubmit}>
           <div className="row">
             <div className="col-md-6">
@@ -63,4 +62,4 @@ class CreateProduct extends Component {
       )
     }
 }
-export default CreateProduct;
+export default CreateMember;

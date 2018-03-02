@@ -4,36 +4,30 @@ import MyGlobleSetting from './MyGlobleSetting';
 
 class TableRow extends Component {
   constructor(props) {
-      super(props);
-      this.handleSubmit = this.handleSubmit.bind(this);
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(event) {
     event.preventDefault();
-    let uri = MyGlobleSetting.url + `/api/products/${this.props.obj.id}`;
+    let uri = MyGlobleSetting.url + `/api/members/${this.props.obj.id}`;
     axios.delete(uri);
-      browserHistory.push('/display-item');
+    browserHistory.push('/display-item');
   }
   render() {
     return (
-        <tr>
-          <td>
-            {this.props.obj.id}
-          </td>
-          <td>
-            {this.props.obj.title}
-          </td>
-          <td>
-            {this.props.obj.body}
-          </td>
-          <td>
-          <form onSubmit={this.handleSubmit}>
-            <Link to={"edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
-           <input type="submit" value="Delete" className="btn btn-danger"/>
-         </form>
-          </td>
-        </tr>
-    );
+      <tr><td>{this.props.obj.avatar}</td>
+      <td>{this.props.obj.name}</td>
+      <td>{this.props.obj.phone}</td>
+      <td>{this.props.obj.date_of_birth}</td>
+      <td>{this.props.obj.position}</td>
+      <td>{this.props.obj.gender}</td>
+      <td><form onSubmit={this.handleSubmit} method="delete">
+      <Link to={"/members/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
+      <input type="submit" value="Delete" className="btn btn-danger"/>
+      </form></td>
+      </tr>
+      );
+    }
   }
-}
 
-export default TableRow;
+  export default TableRow;

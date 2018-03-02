@@ -5,12 +5,12 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1 id="header-title">{{$title}}</h1>
 @stop
 
 @section('content')
         <div id="crud-app"></div>
-        <script src="{{asset('js/member.js')}}" ></script>
+        <script src="{{asset('js/app.js')}}" ></script>
 @stop
 
 @section('css')

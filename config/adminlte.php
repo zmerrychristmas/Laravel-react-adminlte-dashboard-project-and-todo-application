@@ -116,12 +116,12 @@ return [
         ],
         [
             'text'        => 'Projects List',
-            'url'         => 'projects-list',
+            'url'         => '/',
             'label_color' => 'success',
         ],
         [
             'text'        => 'New project',
-            'url'         => 'projects/create',
+            'url'         => 'members/new',
             'icon'        => 'plus'
         ],
         [

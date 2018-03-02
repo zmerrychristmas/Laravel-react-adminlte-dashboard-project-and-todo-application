@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 
-class UpdateProduct extends Component {
+class UpdateMember extends Component {
   constructor(props) {
       super(props);
       this.state = {title: '', body: ''};
@@ -46,13 +46,6 @@ class UpdateProduct extends Component {
   render(){
     return (
       <div>
-        <h1>Update Product</h1>
-        <div className="row">
-          <div className="col-md-10"></div>
-          <div className="col-md-2">
-            <Link to="/display-item" className="btn btn-success">Return to Product</Link>
-          </div>
-        </div>
         <form onSubmit={this.handleSubmit}>
             <div className="form-group">
                 <label>Product Title</label>
@@ -76,4 +69,4 @@ class UpdateProduct extends Component {
     )
   }
 }
-export default UpdateProduct;
+export default UpdateMember;

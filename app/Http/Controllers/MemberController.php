@@ -101,6 +101,15 @@ class MemberController extends Controller
 
     public function members()
     {
-        return view('member/index', []);
+        return view('member/index', ['title' => 'Members']);
+    }
+
+    public function newMember()
+    {
+        return view('member/index', ['title' => 'Create  Member']);
+    }
+    public function editMember()
+    {
+        return view('member/index', ['title' => 'Edit  Member']);
     }
 }

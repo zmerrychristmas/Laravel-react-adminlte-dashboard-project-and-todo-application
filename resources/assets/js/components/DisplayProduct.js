@@ -11,6 +11,7 @@ class DisplayProduct extends Component {
      componentDidMount(){
        axios.get(MyGlobleSetting.url + '/api/products')
        .then(response => {
+        console.log(response);
          this.setState({ products: response.data });
        })
        .catch(function (error) {
