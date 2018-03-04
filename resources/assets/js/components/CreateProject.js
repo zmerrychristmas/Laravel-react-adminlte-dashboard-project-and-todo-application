@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 
-class CreateMember extends Component {
+class CreateProject extends Component {
   constructor(props){
     super(props);
-    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null};
+    this.state = {projectName: '', projectInformation: '', projectPhone: '', projectDob: '', projectPosition: 'intern', projectGender: '1', projectAvatar: null};
 
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
@@ -19,57 +19,57 @@ class CreateMember extends Component {
   }
   handleChangeName(e){
     this.setState({
-      memberName: e.target.value
+      projectName: e.target.value
     })
   }
   handleChangeInformation(e){
     this.setState({
-      memberInformation: e.target.value
+      projectInformation: e.target.value
     })
   }
   handleChangePhone(e){
     this.setState({
-      memberPhone: e.target.value
+      projectPhone: e.target.value
     })
   }
   handleChangeDob(e){
     this.setState({
-      memberDob: e.target.value
+      projectDob: e.target.value
     })
   }
   handleChangePosition(e){
     this.setState({
-      memberPosition: e.target.value
+      projectPosition: e.target.value
     })
   }
   handleChangeGender(e){
     this.setState({
-      memberGender: e.target.value
+      projectGender: e.target.value
     })
   }
   handleChangeAvatar(e){
     this.setState({
-      memberAvatar: e.target.files[0]
+      projectAvatar: e.target.files[0]
     })
   }
   handleSubmit(e){
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name',this.state.memberName);
-    formData.append('information',this.state.memberInformation);
-    formData.append('avatar',this.state.memberAvatar);
-    formData.append('dob',this.state.memberDob);
-    formData.append('phone',this.state.memberPhone);
-    formData.append('position',this.state.memberPosition);
-    formData.append('gender',this.state.memberGender);
+    formData.append('name',this.state.projectName);
+    formData.append('information',this.state.projectInformation);
+    formData.append('avatar',this.state.projectAvatar);
+    formData.append('dob',this.state.projectDob);
+    formData.append('phone',this.state.projectPhone);
+    formData.append('position',this.state.projectPosition);
+    formData.append('gender',this.state.projectGender);
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
         }
     }
-    let uri = MyGlobleSetting.url + '/api/members';
+    let uri = MyGlobleSetting.url + '/api/projects';
     axios.post(uri, formData, config).then((response) => {
-      browserHistory.push('/members?ACTION=1');
+      browserHistory.push('/projects?ACTION=1');
     });
   }
 
@@ -86,7 +86,7 @@ class CreateMember extends Component {
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Avatar:</label>
             <div className="col-sm-10">
-              <input type="file" onChange={this.handleChangeAvatar} ref={this.state.memberAvatar} className="form-control" id="avatar" name="avatar"/>
+              <input type="file" onChange={this.handleChangeAvatar} ref={this.state.projectAvatar} className="form-control" id="avatar" name="avatar"/>
             </div>
           </div>
           <div className="form-group">
@@ -140,4 +140,4 @@ class CreateMember extends Component {
       )
     }
   }
-  export default CreateMember;
+  export default CreateProject;

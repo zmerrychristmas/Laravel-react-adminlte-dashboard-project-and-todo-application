@@ -116,28 +116,28 @@ return [
         ],
         [
             'text'        => 'Projects List',
-            'url'         => '/',
+            'url'         => '/projects',
             'label_color' => 'success',
         ],
         [
             'text'        => 'New project',
-            'url'         => 'members/new',
+            'url'         => '/projects/new',
             'icon'        => 'plus'
         ],
         [
             'text'        => 'Projects Assign member',
-            'url'         => 'projects/assign',
+            'url'         => '/projects/assign',
             'label_color' => 'success',
         ],
         'Member',
         [
             'text' => 'Member List',
-            'url'  => 'admin/members',
+            'url'  => '/members',
             'icon' => 'user',
         ],
         [
             'text' => 'New member',
-            'url'  => 'admin/member/new',
+            'url'  => '/members/new',
             'icon' => 'plus'
         ],
     ],

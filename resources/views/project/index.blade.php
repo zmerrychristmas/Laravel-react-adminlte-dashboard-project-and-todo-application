@@ -5,7 +5,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1 id="header-title">{{$title}}</h1>
 @stop
 
 @section('content')
@@ -14,6 +14,11 @@
 @stop
 
 @section('css')
+    <style>
+        .img-rounded {
+            height: 65px;
+        }
+    </style>
     <link rel="stylesheet" href="/css/admin_custom.css">
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
 @stop

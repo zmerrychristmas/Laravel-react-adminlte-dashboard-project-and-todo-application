@@ -117,4 +117,19 @@ class ProjectController extends Controller
         }
         return response()->json("Faild to assign, check your's input");
     }
+
+    public function projects()
+    {
+        return view('project/index', ['title' => 'Projects']);
+    }
+
+    public function newProject()
+    {
+        return view('project/index', ['title' => 'Create  Project']);
+    }
+
+    public function editProject()
+    {
+        return view('project/index', ['title' => 'Edit  Project']);
+    }
 }

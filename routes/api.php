@@ -36,7 +36,7 @@ Route::get('members/{member}', 'MemberController@show');
 
 Route::post('members','MemberController@store');
 
-Route::put('members/{member}','MemberController@update');
+Route::post('members/{member}','MemberController@update');
 
 Route::delete('members/{member}', 'MemberController@destroy');
 

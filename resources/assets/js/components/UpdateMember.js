@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router';
+import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
+import $ from 'jquery';
 
 class UpdateMember extends Component {
   constructor(props) {
@@ -52,33 +54,39 @@ class UpdateMember extends Component {
     })
   }
   handleChangeGender(e){
-    console.log(e.target)
     this.setState({
       memberGender: e.target.value
     })
   }
   handleChangeAvatar(e){
-    console.log(e.target.files[0]);
+    $('#img_avatar').remove();
     this.setState({
       memberAvatar: e.target.files[0]
     })
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    const products = {
-      title: this.state.title,
-      body: this.state.body
+  handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name',this.state.memberName);
+    formData.append('information',this.state.memberInformation);
+    formData.append('avatar',this.state.memberAvatar);
+    formData.append('dob',this.state.memberDob);
+    formData.append('phone',this.state.memberPhone);
+    formData.append('position',this.state.memberPosition);
+    formData.append('gender',this.state.memberGender);
+    const config = {
+         'Content-Type': 'multipart/form-data'
     }
-    let uri = MyGlobleSetting.url + '/api/products/'+this.props.params.id;
-    axios.patch(uri, products).then((response) => {
-          this.props.history.push('/');
+    let uri = MyGlobleSetting.url + '/api/members/' + this.props.params.id;
+    axios.post(uri, formData, config).then((response) => {
+      browserHistory.push('/members?ACTION=2');
     });
   }
   render(){
     return (
       <div>
-        <form onSubmit={this.handleSubmit} className="form-horizontal"  method="post" enctype="multipart/form-data" >
+        <form onSubmit={this.handleSubmit} className="form-horizontal" >
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Name:</label>
             <div className="col-sm-10">
@@ -88,13 +96,14 @@ class UpdateMember extends Component {
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Avatar:</label>
             <div className="col-sm-10">
+              <img src={this.state.memberAvatar} className="img-rounded" id="img_avatar"/>
               <input type="file" onChange={this.handleChangeAvatar} ref={this.state.memberAvatar} className="form-control" id="avatar" name="avatar"/>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="information">Information:</label>
             <div className="col-sm-10">
-              <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information">{this.state.memberInformation}</textarea>
+              <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information" value={this.state.memberInformation}></textarea>
             </div>
           </div>
           <div className="form-group">

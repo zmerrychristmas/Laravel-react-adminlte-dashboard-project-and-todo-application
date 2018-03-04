@@ -18,3 +18,7 @@ Route::get('/', function () {
 Route::get('/members', 'MemberController@members');
 Route::get('/members/new', 'MemberController@newMember');
 Route::get('/members/edit/{id}', 'MemberController@editMember');
+
+Route::get('/projects', 'ProjectController@projects');
+Route::get('/projects/new', 'ProjectController@newProject');
+Route::get('/projects/edit/{id}', 'ProjectController@editProject');
