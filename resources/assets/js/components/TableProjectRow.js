@@ -22,14 +22,43 @@ class TableProjectRow extends Component {
       browserHistory.push('/projects');
     }
   }
+  projectStatus(status)
+  {
+    switch(status) {
+      case '1': {
+        return 'planend';
+        break;
+      }
+      case '2': {
+        return 'onhold';
+        break;
+      }
+      case '3': {
+        return 'doing';
+        break;
+      }
+      case '4': {
+        return 'done';
+        break;
+      }
+      case '5': {
+        return 'cancelled';
+        break;
+      }
+      default : {
+        return status;
+        break;
+      }
+    }
+  }
   render() {
     return (
-      <tr id={"project_" + this.props.obj.id}><td><img src={this.props.obj.avatar} className="img-rounded"/></td>
+      <tr id={"project_" + this.props.obj.id}>
       <td>{this.props.obj.name}</td>
       <td>{this.props.obj.information}</td>
       <td>{this.props.obj.deadline}</td>
       <td>{this.props.obj.type}</td>
-      <td>{this.props.obj.status}</td>
+      <td>{this.projectStatus(this.props.obj.status)}</td>
       <td><form onSubmit={this.handleSubmit} method="delete">
       <Link to={"/projects/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
       <input type="submit" value="Delete" className="btn btn-danger"/>
@@ -39,4 +68,4 @@ class TableProjectRow extends Component {
     }
   }
 
-  export default TableRow;
+  export default TableProjectRow;

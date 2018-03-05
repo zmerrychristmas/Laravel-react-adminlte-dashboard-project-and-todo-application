@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Member;
+use App\Project;
 
 class MemberController extends Controller
 {
@@ -14,7 +15,13 @@ class MemberController extends Controller
      */
     public function index(Request $request)
     {
-        $members = Member::all();
+        if ($request->get('pid')) {
+            $project = Project::find($request->get('pid'));
+            $inProjects = $project->members->pluck('id')->toArray();
+            $members = Member::whereNotIn('id', $inProjects)->get();
+        } else {
+            $members = Member::all();
+        }
         $messages = [];
         $action = $request->get('ACTION');
         switch($action) {

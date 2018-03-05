@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router';
-import TableProjectRow from './TableRow';
+import TableProjectRow from './TableProjectRow';
 import MyGlobleSetting from './MyGlobleSetting';
 class DisplayProject extends Component {
   constructor(props) {
@@ -55,7 +55,6 @@ class DisplayProject extends Component {
       <tr>
         <td>Name</td>
         <td>Information</td>
-        <td>Phone</td>
         <td>Deadline</td>
         <td>Type</td>
         <td>Status</td>

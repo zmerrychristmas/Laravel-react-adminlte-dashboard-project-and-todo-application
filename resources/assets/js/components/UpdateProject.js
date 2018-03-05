@@ -7,137 +7,109 @@ import $ from 'jquery';
 
 class UpdateProject extends Component {
   constructor(props) {
-    super(props);
-    this.state = {projectName: '', projectInformation: '', projectPhone: '', projectDob: '', projectPosition: 'intern', projectGender: '1', projectAvatar: null};
-    this.handleChangeName = this.handleChangeName.bind(this);
-    this.handleChangeInformation = this.handleChangeInformation.bind(this);
-    this.handleChangePhone = this.handleChangePhone.bind(this);
-    this.handleChangeDob = this.handleChangeDob.bind(this);
-    this.handleChangePosition = this.handleChangePosition.bind(this);
-    this.handleChangeGender = this.handleChangeGender.bind(this);
-    this.handleChangeAvatar = this.handleChangeAvatar.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+   super(props);
+   this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1'};
 
-  componentDidMount(){
-    axios.get(MyGlobleSetting.url + `/api/projects/${this.props.params.id}`)
-    .then(response => {
-      this.setState({ projectName: response.data.name, projectInformation: response.data.information, projectPhone: response.data.phone, projectDob: response.data.date_of_birth, projectPosition: response.data.position, projectGender: response.data.gender, projectAvatar: response.data.avatar });
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-  }
-  handleChangeName(e){
-    this.setState({
-      projectName: e.target.value
-    })
-  }
-  handleChangeInformation(e){
-    this.setState({
-      projectInformation: e.target.value
-    })
-  }
-  handleChangePhone(e){
-    this.setState({
-      projectPhone: e.target.value
-    })
-  }
-  handleChangeDob(e){
-    this.setState({
-      projectDob: e.target.value
-    })
-  }
-  handleChangePosition(e){
-    this.setState({
-      projectPosition: e.target.value
-    })
-  }
-  handleChangeGender(e){
-    this.setState({
-      projectGender: e.target.value
-    })
-  }
-  handleChangeAvatar(e){
-    $('#img_avatar').remove();
-    this.setState({
-      projectAvatar: e.target.files[0]
-    })
-  }
+   this.handleChangeName = this.handleChangeName.bind(this);
+   this.handleChangeInformation = this.handleChangeInformation.bind(this);
+   this.handleChangeDeadline = this.handleChangeDeadline.bind(this);
+   this.handleChangeType = this.handleChangeType.bind(this);
+   this.handleChangeStatus = this.handleChangeStatus.bind(this);
+   this.handleSubmit = this.handleSubmit.bind(this);
+ }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('name',this.state.projectName);
-    formData.append('information',this.state.projectInformation);
-    formData.append('avatar',this.state.projectAvatar);
-    formData.append('dob',this.state.projectDob);
-    formData.append('phone',this.state.projectPhone);
-    formData.append('position',this.state.projectPosition);
-    formData.append('gender',this.state.projectGender);
-    const config = {
-         'Content-Type': 'multipart/form-data'
-    }
-    let uri = MyGlobleSetting.url + '/api/projects/' + this.props.params.id;
-    axios.post(uri, formData, config).then((response) => {
-      browserHistory.push('/projects?ACTION=2');
-    });
-  }
-  render(){
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit} className="form-horizontal" >
+ componentDidMount(){
+  axios.get(MyGlobleSetting.url + `/api/projects/${this.props.params.id}`)
+  .then(response => {
+    this.setState({ projectName: response.data.name, projectInformation: response.data.information, projectDeadline: response.data.deadline, projectType: response.data.type, projectStatus: response.data.status });
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+}
+handleChangeName(e){
+  this.setState({
+    projectName: e.target.value
+  })
+}
+handleChangeInformation(e){
+  this.setState({
+    projectInformation: e.target.value
+  })
+}
+handleChangeDeadline(e){
+  this.setState({
+    projectDeadline: e.target.value
+  })
+}
+handleChangeType(e){
+  this.setState({
+    projectType: e.target.value
+  })
+}
+handleChangeStatus(e){
+  this.setState({
+    projectStatus: e.target.value
+  })
+}
+
+handleSubmit(e) {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('name',this.state.projectName);
+  formData.append('information',this.state.projectInformation);
+  formData.append('deadline',this.state.projectDeadline);
+  formData.append('type',this.state.projectType);
+  formData.append('status',this.state.projectStatus);
+  const config = {
+   'Content-Type': 'multipart/form-data'
+ }
+ let uri = MyGlobleSetting.url + '/api/projects/' + this.props.params.id;
+ axios.post(uri, formData, config).then((response) => {
+  browserHistory.push('/projects?ACTION=2');
+});
+}
+render(){
+  return (
+         <div>
+        <form onSubmit={this.handleSubmit} className="form-horizontal"  method="post" encType="multipart/form-data" >
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Name:</label>
             <div className="col-sm-10">
-              <input type="text" value={this.state.projectName} className="form-control" id="name" onChange={this.handleChangeName} name="name" placeholder="Enter name" />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="name">Avatar:</label>
-            <div className="col-sm-10">
-              <img src={this.state.projectAvatar} className="img-rounded" id="img_avatar"/>
-              <input type="file" onChange={this.handleChangeAvatar} ref={this.state.projectAvatar} className="form-control" id="avatar" name="avatar"/>
+              <input type="text" className="form-control" id="name" value={this.state.projectName} onChange={this.handleChangeName} name="name" placeholder="Enter name" />
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="information">Information:</label>
             <div className="col-sm-10">
-              <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information" value={this.state.projectInformation}></textarea>
+              <textarea className="form-control" id="information" value={this.state.projectInformation} onChange={this.handleChangeInformation} name="information"></textarea>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="phone">Phone:</label>
+            <label className="control-label col-sm-2" htmlFor="deadline">Deadline:</label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangePhone} value={this.state.projectPhone} className="form-control" id="phone" name="phone" placeholder="Enter Phone" />
+              <input type="text" onChange={this.handleChangeDeadline} value={this.state.projectDeadline} className="form-control" id="deadline" name="deadline" placeholder="Enter Deadline" />
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="date_of_birth">Date of birth:</label>
+            <label className="control-label col-sm-2" htmlFor="type">Type:</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" onChange={this.handleChangeDob} id="date_of_birth" name="date_of_birth" placeholder="Enter Date of birth" value={this.state.projectDob} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="position">Position:</label>
-            <div className="col-sm-10">
-              <select className="form-control" value={this.state.projectPosition} name="position" id="position" onChange={this.handleChangePosition}>
-                <option value="intern">intern</option>
-                <option value="junior">junior</option>
-                <option value="senior">senior</option>
-                <option value="pm">pm</option>
-                <option value="ceo">ceo</option>
-                <option value="cto">cto</option>
-                <option value="bo">bo</option>
+              <select className="form-control" value={this.state.projectType} name="type" id="type" onChange={this.handleChangeStatus}>
+                <option value="lab">lab</option>
+                <option value="single">single</option>
+                <option value="acceptance">acceptance</option>
               </select>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="gender">Gender:</label>
+            <label className="control-label col-sm-2" htmlFor="status">Status:</label>
             <div className="col-sm-10">
-              <select className="form-control" name="gender" value={this.state.projectGender} onChange={this.handleChangeGender} id="gender">
-                <option value="1">male</option>
-                <option value="2">female</option>
+              <select className="form-control" name="status" value={this.state.projectStatus} onChange={this.handleChangeStatus} id="status">
+                <option value="1">planned</option>
+                <option value="2">onhold</option>
+                <option value="3">doing</option>
+                <option value="4">done</option>
+                <option value="5">cancelled</option>
               </select>
             </div>
           </div>
@@ -149,6 +121,6 @@ class UpdateProject extends Component {
         </form>
       </div>
     )
-  }
+}
 }
 export default UpdateProject;

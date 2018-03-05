@@ -9,6 +9,7 @@ import UpdateMember from './components/UpdateMember';
 import DisplayProject from './components/DisplayProject';
 import CreateProject from './components/CreateProject';
 import UpdateProject from './components/UpdateProject';
+import AssignMember from './components/AssignMember';
 
 render(
     <Router history={browserHistory}>
@@ -20,5 +21,6 @@ render(
         <Route path="/projects" component={DisplayProject} />
         <Route path="/projects/new" component={CreateProject} />
         <Route path="/projects/edit/:id" component={UpdateProject} />
+        <Route path="/projects/assign" component={AssignMember} />
     </Router>,
     document.getElementById('crud-app'));

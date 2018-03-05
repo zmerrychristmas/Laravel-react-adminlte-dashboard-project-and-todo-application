@@ -25,7 +25,7 @@ Route::get('projects/{project}', 'ProjectController@show');
 
 Route::post('projects','ProjectController@store');
 
-Route::put('projects/{project}','ProjectController@update');
+Route::post('projects/{project}','ProjectController@update');
 
 Route::delete('projects/{project}', 'ProjectController@destroy');
 
@@ -41,4 +41,4 @@ Route::post('members/{member}','MemberController@update');
 Route::delete('members/{member}', 'MemberController@destroy');
 
 // assign to project
-Route::Post('projects/assign', 'ProjectController@assignMember');
+Route::post('project/assign', 'ProjectController@assignMember');

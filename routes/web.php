@@ -22,3 +22,4 @@ Route::get('/members/edit/{id}', 'MemberController@editMember');
 Route::get('/projects', 'ProjectController@projects');
 Route::get('/projects/new', 'ProjectController@newProject');
 Route::get('/projects/edit/{id}', 'ProjectController@editProject');
+Route::get('/projects/assign', 'ProjectController@assign');
