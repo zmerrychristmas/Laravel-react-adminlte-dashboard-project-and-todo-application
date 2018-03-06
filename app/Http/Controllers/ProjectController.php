@@ -14,10 +14,33 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->get('pid')) {
+            $projects = Project::find(16);
+            $projects->members->pluck('id')->toArray();
+        }
         $projects = Project::all();
-        return response()->json($projects);
+        $messages = [];
+        $action = $request->get('ACTION');
+        switch($action) {
+            case 1: {
+                $messages[] = 'Create project successfully !';
+                break;
+            }
+            case 2: {
+                $messages[] = 'Update project successfully !';
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        $result = [
+            'projects' => $projects,
+            'messages' => $messages
+        ];
+        return response()->json($result);
     }
 
     /**
@@ -100,8 +123,8 @@ class ProjectController extends Controller
 
     public function assignMember(Request $request)
     {
-        $idMember = $request->get('id_member');
-        $idProject = $request->get('id_project');
+        $idMember = $request->get('member_id');
+        $idProject = $request->get('project_id');
         $project = Project::find($idProject);
         $member = Member::find($idMember);
         if ($member && $project) {
@@ -116,5 +139,24 @@ class ProjectController extends Controller
             return response()->json('Assign Successfully.');
         }
         return response()->json("Faild to assign, check your's input");
+    }
+
+    public function projects()
+    {
+        return view('project/index', ['title' => 'Projects']);
+    }
+
+    public function newProject()
+    {
+        return view('project/index', ['title' => 'Create  Project']);
+    }
+
+    public function editProject()
+    {
+        return view('project/index', ['title' => 'Edit  Project']);
+    }
+    public function assign()
+    {
+        return view('project/index', ['title' => 'Assign Member To Project']);
     }
 }

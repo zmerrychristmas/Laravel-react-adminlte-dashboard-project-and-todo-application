@@ -3,17 +3,24 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 
-import Master from './components/Master';
-import CreateProduct from './components/CreateProduct';
-import DisplayProduct from './components/DisplayProduct';
-import UpdateProduct from './components/UpdateProduct';
+import DisplayMember from './components/DisplayMember';
+import CreateMember from './components/CreateMember';
+import UpdateMember from './components/UpdateMember';
+import DisplayProject from './components/DisplayProject';
+import CreateProject from './components/CreateProject';
+import UpdateProject from './components/UpdateProject';
+import AssignMember from './components/AssignMember';
 
 render(
     <Router history={browserHistory}>
-        <Route path="/" component={Master} >
+        <Route path="/" component={DisplayMember} >
         </Route>
-        <Route path="/add-item" component={CreateProduct} />
-        <Route path="/display-item" component={DisplayProduct} />
-        <Route path="/edit/:id" component={UpdateProduct} />
+        <Route path="/members" component={DisplayMember} />
+        <Route path="/members/new" component={CreateMember} />
+        <Route path="/members/edit/:id" component={UpdateMember} />
+        <Route path="/projects" component={DisplayProject} />
+        <Route path="/projects/new" component={CreateProject} />
+        <Route path="/projects/edit/:id" component={UpdateProject} />
+        <Route path="/projects/assign" component={AssignMember} />
     </Router>,
     document.getElementById('crud-app'));
