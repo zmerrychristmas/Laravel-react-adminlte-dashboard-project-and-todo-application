@@ -5,8 +5,7 @@ import MyGlobleSetting from './MyGlobleSetting';
 class CreateProject extends Component {
   constructor(props){
     super(props);
-    this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1'};
-
+    this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1', errors: ''};
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
     this.handleChangeDeadline = this.handleChangeDeadline.bind(this);
@@ -43,6 +42,7 @@ class CreateProject extends Component {
   handleSubmit(e){
     e.preventDefault();
     const formData = new FormData();
+    this.state.projectDeadline = this.state.projectDeadline ? this.state.projectDeadline : $('#deadline').val();
     formData.append('name',this.state.projectName);
     formData.append('information',this.state.projectInformation);
     formData.append('deadline',this.state.projectDeadline);
@@ -56,29 +56,36 @@ class CreateProject extends Component {
     let uri = MyGlobleSetting.url + '/api/projects';
     axios.post(uri, formData, config).then((response) => {
       browserHistory.push('/projects?ACTION=1');
+    }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
     });
   }
 
   render() {
     return (
-      <div>
+      <div className="invoice">
         <form onSubmit={this.handleSubmit} className="form-horizontal"  method="post" encType="multipart/form-data" >
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Name:</label>
             <div className="col-sm-10">
               <input type="text" className="form-control" id="name" onChange={this.handleChangeName} name="name" placeholder="Enter name" />
+              <p className="error">{this.state.errors.name}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="information">Information:</label>
             <div className="col-sm-10">
               <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information"></textarea>
+              <p className="error">{this.state.errors.information}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="deadline">Deadline:</label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangeDeadline} className="form-control" id="deadline" name="deadline" placeholder="Enter Deadline" />
+              <input type="text" onChange={this.handleChangeDeadline} className="form-control datepicker" id="deadline" name="deadline" placeholder="Enter Deadline" />
+                <p className="error">{this.state.errors.deadline}</p>
             </div>
           </div>
           <div className="form-group">
@@ -89,6 +96,7 @@ class CreateProject extends Component {
                 <option value="single">single</option>
                 <option value="acceptance">acceptance</option>
               </select>
+              <p className="error">{this.state.errors.type}</p>
             </div>
           </div>
           <div className="form-group">
@@ -101,6 +109,7 @@ class CreateProject extends Component {
                 <option value="4">done</option>
                 <option value="5">cancelled</option>
               </select>
+              <p className="error">{this.state.errors.status}</p>
             </div>
           </div>
           <div className="form-group">

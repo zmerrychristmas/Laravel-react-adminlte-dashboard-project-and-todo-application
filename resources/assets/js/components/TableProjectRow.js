@@ -60,8 +60,8 @@ class TableProjectRow extends Component {
       <td>{this.props.obj.type}</td>
       <td>{this.projectStatus(this.props.obj.status)}</td>
       <td><form onSubmit={this.handleSubmit} method="delete">
-      <Link to={"/projects/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
-      <input type="submit" value="Delete" className="btn btn-danger"/>
+      <Link to={"/projects/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link> /
+      <Link to={"/projects/detail/"+this.props.obj.id} className="btn btn-success">Show</Link> /<input type="submit" value="Delete" className="btn btn-danger"/>
       </form></td>
       </tr>
       );

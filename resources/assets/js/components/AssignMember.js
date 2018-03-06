@@ -5,7 +5,7 @@ import MyGlobleSetting from './MyGlobleSetting';
 class AssignMember extends Component {
   constructor(props){
     super(props);
-    this.state = {projectId: '', memberId: '', role: '', projects: '', members: ''};
+    this.state = {projectId: '', memberId: '', role: '', projects: '', members: '', errors: ''};
 
     this.handleChangeProject = this.handleChangeProject.bind(this);
     this.handleChangeMember = this.handleChangeMember.bind(this);
@@ -68,6 +68,16 @@ class AssignMember extends Component {
    }
    return '';
   }
+ messages() {
+   if(this.state.messages instanceof Array){
+     return this.state.messages.map((object, i) => {
+       return <div className="alert alert-success" key={i}>
+                <a href="#" className="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Success!</strong> {object}.
+              </div>;
+     })
+   }
+ }
   memberOption() {
    if(this.state.members instanceof Array){
      return this.state.members.map((object, i) => {
@@ -84,38 +94,50 @@ class AssignMember extends Component {
     formData.append('role',this.state.role);
 
     let uri = MyGlobleSetting.url + "/api/project/assign";
-    console.log(uri);
     axios.post(uri, formData).then((response) => {
-      browserHistory.push('/projects?ACTION=1');
+      let url = '/projects/detail/' + this.state.projectId + '?ACTION=1';
+      browserHistory.push(url);
+    }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
     });
   }
-
+  setErrors() {
+    console.log('1234');
+  }
   render() {
     return (
-      <div>
+      <div className="invoice">
+      <div className="messages">
+        {this.messages()}
+      </div>
+
       <form onSubmit={this.handleSubmit} className="form-horizontal"  method="post">
       <div className="form-group">
       <label className="control-label col-sm-2" htmlFor="type">Project:</label>
       <div className="col-sm-10">
-      <select className="form-control" name="type" id="type" value={this.state.projectId} onChange={this.handleChangeProject}>
+      <select className="form-control" name="type" id="type" required="required" value={this.state.projectId} onChange={this.handleChangeProject}>
       <option value="">Choose a project</option>
       {this.projectOption()}
       </select>
+      <p className="error">{this.state.errors.project_id}</p>
       </div>
       </div>
       <div className="form-group">
       <label className="control-label col-sm-2" htmlFor="status" >Member:</label>
       <div className="col-sm-10">
-      <select className="form-control" name="status" value={this.state.memberId} onChange={this.handleChangeMember} id="status">
+      <select className="form-control" name="status" required="required" value={this.state.memberId} onChange={this.handleChangeMember} id="status">
       <option value="">Choose a member</option>
       {this.memberOption()}
       </select>
+      <p className="error">{this.state.errors.member_id}</p>
       </div>
       </div>
       <div className="form-group">
       <label className="control-label col-sm-2" htmlFor="name">Role:</label>
       <div className="col-sm-10">
-      <select className="form-control" name="role" onChange={this.handleChangeRole} id="role">
+      <select className="form-control" name="role" required="required" onChange={this.handleChangeRole} id="role">
         <option value=''>Choose a role</option>
         <option value="dev">dev</option>
         <option value="pl">pl</option>
@@ -123,6 +145,7 @@ class AssignMember extends Component {
         <option value="po">po</option>
         <option value="sm">sm</option>
       </select>
+      <p className="error">{this.state.errors.role}</p>
       </div>
       </div>
       <div className="form-group">

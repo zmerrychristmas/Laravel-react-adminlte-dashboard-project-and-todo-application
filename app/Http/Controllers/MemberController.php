@@ -52,10 +52,19 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required|unique:member|regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
+            'dob' => 'required',
+            'information' => 'max:300',
+            'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
+            'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
+            'gender' => 'required|in:1,2',
+        ];
+        $request->validate($rules);
         $member = new Member([
           'name' => $request->get('name'),
-          'information' => $request->get('information'),
-          'date_of_birth' => date("Y-m-d H:i:s", strtotime($request->get('date_of_birth'))),
+          'information' => $request->get('information') ? $request->get('information') : '',
+          'date_of_birth' => date($request->get('dob')),
           'position' => $request->get('position'),
           'phone' => $request->get('phone'),
           'gender' => $request->get('gender'),
@@ -108,10 +117,19 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $rules = [
+            'name' => 'required|unique:member,id,'.$id.'|regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
+            'dob' => 'required',
+            'information' => 'max:300',
+            'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
+            'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
+            'gender' => 'required|in:1,2',
+        ];
+        $request->validate($rules);
         $member = Member::find($id);
         $member->name = $request->get('name');
         $member->information = $request->get('information');
-        $member->date_of_birth = date("Y-m-d H:i:s", strtotime($request->get('dob')));
+        $member->date_of_birth =date($request->get('dob'));
         $member->position = $request->get('position');
         $member->phone = $request->get('phone');
         $member->gender = $request->get('gender');
@@ -149,6 +167,7 @@ class MemberController extends Controller
     public function destroy($id)
     {
       $member = Member::find($id);
+      $member->projects()->detach();
       $member->delete();
 
       return response()->json('Member Deleted Successfully.');
