@@ -64,6 +64,7 @@ handleSubmit(e) {
   formData.append('deadline',this.state.projectDeadline);
   formData.append('type',this.state.projectType);
   formData.append('status',this.state.projectStatus);
+  formData.append('_method', 'PUT');
   const config = {
    'Content-Type': 'multipart/form-data'
  }

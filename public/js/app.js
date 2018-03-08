@@ -59200,6 +59200,7 @@ var UpdateMember = function (_Component) {
       formData.append('phone', this.state.memberPhone);
       formData.append('position', this.state.memberPosition);
       formData.append('gender', this.state.memberGender);
+      formData.append('_method', 'PUT');
       var config = {
         'Content-Type': 'multipart/form-data'
       };
@@ -60129,6 +60130,7 @@ var UpdateProject = function (_Component) {
       formData.append('deadline', this.state.projectDeadline);
       formData.append('type', this.state.projectType);
       formData.append('status', this.state.projectStatus);
+      formData.append('_method', 'PUT');
       var config = {
         'Content-Type': 'multipart/form-data'
       };

@@ -77,6 +77,7 @@ class UpdateMember extends Component {
     formData.append('phone',this.state.memberPhone);
     formData.append('position',this.state.memberPosition);
     formData.append('gender',this.state.memberGender);
+    formData.append('_method', 'PUT');
     const config = {
          'Content-Type': 'multipart/form-data'
     }
