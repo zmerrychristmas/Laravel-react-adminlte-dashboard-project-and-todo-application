@@ -60952,7 +60952,7 @@ var TableMemberAssign = function (_Component) {
       event.preventDefault();
       var result = confirm("Want to delete?");
       if (result) {
-        var uri = __WEBPACK_IMPORTED_MODULE_2__MyGlobleSetting__["a" /* default */].url + ('/api/project/detach/' + this.props.obj.pm_id);
+        var uri = __WEBPACK_IMPORTED_MODULE_2__MyGlobleSetting__["a" /* default */].url + ('/api/project/detach?member_id=' + this.props.obj.member_id + '&project_id=' + this.props.obj.project_id);
         axios.delete(uri).then(function (response) {
           $('#member_role' + _this2.props.obj.id).remove();
           $('.alert-success').remove();

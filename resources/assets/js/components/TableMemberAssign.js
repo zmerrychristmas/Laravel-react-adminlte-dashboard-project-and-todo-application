@@ -12,7 +12,7 @@ class TableMemberAssign extends Component {
     event.preventDefault();
     var result = confirm("Want to delete?");
     if (result) {
-      let uri = MyGlobleSetting.url + `/api/project/detach/${this.props.obj.pm_id}`;
+      let uri = MyGlobleSetting.url + `/api/project/detach?member_id=${this.props.obj.member_id}&project_id=${this.props.obj.project_id}`;
       axios.delete(uri).then(response => {
         $('#member_role' + this.props.obj.id).remove();
         $('.alert-success').remove();

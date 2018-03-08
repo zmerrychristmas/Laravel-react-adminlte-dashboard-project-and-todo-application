@@ -81,7 +81,7 @@ class MemberController extends Controller
             }
         }
         $member->save();
-        return response()->json('Member Added Successfully.');
+        return response()->json(['status' => true, 'message' => 'Member Added Successfully.']);
     }
 
     /**
@@ -155,7 +155,7 @@ class MemberController extends Controller
         }
         $member->save();
 
-        return response()->json('Member Updated Successfully.');
+        return response()->json(['status' => true, 'message' => 'Member Updated Successfully.']);
     }
 
     /**
@@ -170,7 +170,7 @@ class MemberController extends Controller
       $member->projects()->detach();
       $member->delete();
 
-      return response()->json('Member Deleted Successfully.');
+      return response()->json(['status' => true, 'message' => 'Member Deleted Successfully.']);
     }
 
     public function members()
