@@ -22,7 +22,7 @@ class UpdateMember extends Component {
   componentDidMount(){
     axios.get(MyGlobleSetting.url + `/api/members/${this.props.params.id}`)
     .then(response => {
-      this.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, memberDob: response.data.date_of_birth, memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
+      this.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, memberDob: response.data.date_of_birth.split(" ")[0], memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
     }).catch(error => {
       this.setState({
         errors: error.response.data.errors

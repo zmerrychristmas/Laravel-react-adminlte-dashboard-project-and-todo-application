@@ -51,13 +51,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-      $rules = [
-      'name' => 'required|unique:member|regex:/^[a-zA-Z0-9-. ]+$/u|max:10',
-      'information' => 'max:300',
-      'type' => 'required|in:lab,single,acceptance',
-      'status' => 'required|in:1,2,3,4,5',
-      ];
-      $request->validate($rules);
+      $request->validate(self::RULES);
       $project = new Project([
         'name' => $request->get('name'),
         'information' => $request->get('information'),
@@ -107,13 +101,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-      $rules = [
-      'name' => 'required|unique:member,id,'.$id.'|regex:/^[a-zA-Z0-9-. ]+$/u|max:10',
-      'information' => 'max:300',
-      'type' => 'required|in:lab,single,acceptance',
-      'status' => 'required|in:1,2,3,4,5',
-      ];
-      $request->validate($rules);
+      $request->validate(self::RULES);
       $project = Project::find($id);
       $project->name = $request->get('name');
       $project->information = $request->get('information');
@@ -208,4 +196,12 @@ class ProjectController extends Controller
     {
       return view('project/detail', ['title' => 'Detail Project']);
     }
+
+    const RULES = [
+      'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:10',
+      'information' => 'max:300',
+      'deadline' => 'date',
+      'type' => 'required|in:lab,single,acceptance',
+      'status' => 'required|in:1,2,3,4,5',
+    ];
   }

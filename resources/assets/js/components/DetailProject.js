@@ -46,6 +46,12 @@ class DetailProject extends Component {
       }
     }
   }
+
+date_date(d)
+{
+  d = d.split(" ")[0];
+  return d;
+}
  messages() {
    if(this.state.messages instanceof Array){
      return this.state.messages.map((object, i) => {
@@ -112,7 +118,7 @@ class DetailProject extends Component {
       </div>
       <div className="row">
         <div className="col-xs-12 table-responsive">
-          <table className="table table-striped">
+          <table className="table table-striped table-responsive">
             <thead>
             <tr>
               <th>Name</th>

@@ -54,7 +54,7 @@ class DisplayProject extends Component {
     <thead>
       <tr>
         <td>Name</td>
-        <td>Information</td>
+        <td width="30%">Information</td>
         <td>Deadline</td>
         <td>Type</td>
         <td>Status</td>

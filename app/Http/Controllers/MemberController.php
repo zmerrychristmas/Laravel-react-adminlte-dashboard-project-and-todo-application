@@ -52,15 +52,7 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required|unique:member|regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
-            'dob' => 'required',
-            'information' => 'max:300',
-            'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
-            'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
-            'gender' => 'required|in:1,2',
-        ];
-        $request->validate($rules);
+        $request->validate(self::RULES);
         $member = new Member([
           'name' => $request->get('name'),
           'information' => $request->get('information') ? $request->get('information') : '',
@@ -117,15 +109,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'name' => 'required|unique:member,id,'.$id.'|regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
-            'dob' => 'required',
-            'information' => 'max:300',
-            'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
-            'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
-            'gender' => 'required|in:1,2',
-        ];
-        $request->validate($rules);
+        $request->validate(self::RULES);
         $member = Member::find($id);
         $member->name = $request->get('name');
         $member->information = $request->get('information');
@@ -186,4 +170,13 @@ class MemberController extends Controller
     {
         return view('member/index', ['title' => 'Edit  Member']);
     }
+
+    const RULES = [
+      'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
+      'dob' => 'required|date',
+      'information' => 'max:300',
+      'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
+      'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
+      'gender' => 'required|in:1,2',
+    ];
 }

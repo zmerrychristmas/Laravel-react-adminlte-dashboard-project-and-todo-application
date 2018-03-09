@@ -22,7 +22,7 @@ class UpdateProject extends Component {
   axios.get(MyGlobleSetting.url + `/api/projects/${this.props.params.id}`)
   .then(response => {
     console.log(response);
-    this.setState({ projectName: response.data.project.name, projectInformation: response.data.project.information, projectDeadline: response.data.project.deadline, projectType: response.data.project.type, projectStatus: response.data.project.status });
+    this.setState({ projectName: response.data.project.name, projectInformation: response.data.project.information, projectDeadline: response.data.project.deadline.split(" ")[0], projectType: response.data.project.type, projectStatus: response.data.project.status });
   }).catch(error => {
       this.setState({
         errors: error.response.data.errors
@@ -121,6 +121,8 @@ render(){
               </select>
               <p className="error">{this.state.errors.status}</p>
             </div>
+          </div>
+          <div className="form-group">
           </div>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
