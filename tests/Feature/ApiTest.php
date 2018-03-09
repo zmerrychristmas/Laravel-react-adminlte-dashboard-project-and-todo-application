@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class ApiTest extends TestCase
 {
-    static $member_created_id;
-    static $project_created_id;
     function testGetAllMembers()
     {
         $response = $this->json('GET', '/api/members');
@@ -28,7 +26,6 @@ class ApiTest extends TestCase
             'phone' => '0965841492',
             'gender' => 1,
             ]);
-        self::$member_created_id = DB::getPdo()->lastInsertId();
         $response->assertStatus(200)
         ->assertJson(['status' => true, 'message' => 'Member Added Successfully.']);
         return DB::getPdo()->lastInsertId();
@@ -167,7 +164,6 @@ class ApiTest extends TestCase
             'type' => 'lab',
             'status' => 1
             ]);
-        self::$project_created_id = DB::getPdo()->lastInsertId();
         $response->assertStatus(200)
         ->assertJson(['status' => true, 'message' => 'Project Added Successfully.']);
         return DB::getPdo()->lastInsertId();
@@ -184,7 +180,6 @@ class ApiTest extends TestCase
             'type' => 'lab',
             'status' => 1
             ]);
-        self::$project_created_id = DB::getPdo()->lastInsertId();
         $response->assertStatus(422)
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["name"=>["The name may not be greater than 10 characters."]]]);
     }
@@ -200,7 +195,6 @@ class ApiTest extends TestCase
             'type' => 'lab',
             'status' => 1
             ]);
-        self::$project_created_id = DB::getPdo()->lastInsertId();
         $response->assertStatus(200)
         ->assertJson(['status' => true, 'message' => 'Project Added Successfully.']);
     }
@@ -242,10 +236,14 @@ class ApiTest extends TestCase
             ]);
     }
 
-    function unassign()
+    /**
+     * @depends testCreateMember
+     * @depends testCreateProject
+     */
+    function unassign($m_id, $p_id)
     {
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('DELETE', '/api/project/detach',['project_id' => self::$project_created_id,'member_id' => self::$member_created_id]);
+        ->json('DELETE', '/api/project/detach',['project_id' => $p_id,'member_id' => $m_id]);
         $response->assertStatus(200)
         ->assertJson([
             'status' => true,
