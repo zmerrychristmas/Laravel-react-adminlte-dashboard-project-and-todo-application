@@ -174,7 +174,7 @@ class MemberController extends Controller
 
     const RULES = [
       'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
-      'avatar' => 'avatarFile:jpg,png,gif,jpeg',
+      'avatar' => 'avatarFile:jpg,png,gif,jpeg|max:10240',
       'dob' => 'required|date|Older60YearOlds|notEarlyThanToday',
       'information' => 'max:300',
       'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
