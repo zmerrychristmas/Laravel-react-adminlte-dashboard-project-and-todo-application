@@ -116,7 +116,7 @@ date_date(d)
           </Link>
         </div>
       </div>
-      <div className="row">
+         <div className="row">
         <div className="col-xs-12 table-responsive">
           <table className="table table-striped table-responsive">
             <thead>

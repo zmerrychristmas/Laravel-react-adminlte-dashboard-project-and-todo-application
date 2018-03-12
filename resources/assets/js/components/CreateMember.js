@@ -6,7 +6,7 @@ import MyGlobleSetting from './MyGlobleSetting';
 class CreateMember extends Component {
   constructor(props){
     super(props);
-    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors: ''};
+    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors:  {name: '', avatar: '', information: '', gender: '', dob: '', position: ''}};
 
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
@@ -64,6 +64,7 @@ class CreateMember extends Component {
     formData.append('phone',this.state.memberPhone);
     formData.append('position',this.state.memberPosition);
     formData.append('gender',this.state.memberGender);
+    formData.append('MAX_FILE_SIZE',20907152);
     const config = {
         headers: {
             'content-type': 'multipart/form-data'

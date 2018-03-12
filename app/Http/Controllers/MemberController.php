@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Member;
 use App\Project;
+use App\Rules\Older60YearOlds;
 
 class MemberController extends Controller
 {
@@ -173,7 +174,8 @@ class MemberController extends Controller
 
     const RULES = [
       'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
-      'dob' => 'required|date',
+      'avatar' => 'avatarFile:jpg,png,gif,jpeg',
+      'dob' => 'required|date|Older60YearOlds|notEarlyThanToday',
       'information' => 'max:300',
       'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
       'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',

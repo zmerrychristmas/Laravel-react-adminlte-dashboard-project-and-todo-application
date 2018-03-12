@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class 60YearOlds implements Rule
+class Older60YearOlds implements Rule
 {
     /**
      * Create a new rule instance.

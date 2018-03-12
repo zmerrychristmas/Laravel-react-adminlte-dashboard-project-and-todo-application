@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Project;
 use App\Member;
 
+
 class ProjectController extends Controller
 {
     /**
@@ -77,6 +78,7 @@ class ProjectController extends Controller
       ->join('member', 'member.id', '=', 'project_member.member_id')
       ->select('project_member.member_id', 'project_member.project_id', 'member.name', 'project_member.role', 'project_member.id as pm_id')
       ->where('project_id', '=', $id)->get();
+
       return response()->json(['project' => $project, 'member_roles' => $member_roles]);
     }
 

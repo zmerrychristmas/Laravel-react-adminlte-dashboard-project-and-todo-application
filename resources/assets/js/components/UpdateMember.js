@@ -84,6 +84,10 @@ class UpdateMember extends Component {
     let uri = MyGlobleSetting.url + '/api/members/' + this.props.params.id;
     axios.post(uri, formData, config).then((response) => {
       browserHistory.push('/members?ACTION=2');
+    }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
     });
   }
   render(){
