@@ -22,6 +22,21 @@ class TableProjectRow extends Component {
       browserHistory.push('/projects');
     }
   }
+
+  projectInformation(information)
+  {
+    if(information.length > 100) {
+      information = information.substring(0, 30) + '...';
+    }
+    return information;
+  }
+
+  projectDeadline(deadline)
+  {
+    deadline = deadline.split(" ");
+    return deadline[0];
+  }
+
   projectStatus(status)
   {
     switch(status) {
@@ -55,13 +70,13 @@ class TableProjectRow extends Component {
     return (
       <tr id={"project_" + this.props.obj.id}>
       <td>{this.props.obj.name}</td>
-      <td>{this.props.obj.information}</td>
-      <td>{this.props.obj.deadline}</td>
+      <td>{this.projectInformation(this.props.obj.information)}</td>
+      <td>{this.projectDeadline(this.props.obj.deadline)}</td>
       <td>{this.props.obj.type}</td>
       <td>{this.projectStatus(this.props.obj.status)}</td>
       <td><form onSubmit={this.handleSubmit} method="delete">
-      <Link to={"/projects/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
-      <input type="submit" value="Delete" className="btn btn-danger"/>
+      <Link to={"/projects/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>&nbsp;
+      <Link to={"/projects/detail/"+this.props.obj.id} className="btn btn-success">Show</Link>&nbsp;<input type="submit" value="Delete" className="btn btn-danger"/>
       </form></td>
       </tr>
       );

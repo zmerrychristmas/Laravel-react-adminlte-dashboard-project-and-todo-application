@@ -128,6 +128,7 @@ return [
             'text'        => 'Projects Assign member',
             'url'         => '/projects/assign',
             'label_color' => 'success',
+            'icon'  => 'bookmark'
         ],
         'Member',
         [

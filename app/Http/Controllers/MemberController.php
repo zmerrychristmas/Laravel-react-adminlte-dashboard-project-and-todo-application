@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Member;
 use App\Project;
+use App\Rules\Older60YearOlds;
 
 class MemberController extends Controller
 {
@@ -52,10 +53,11 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate(self::RULES);
         $member = new Member([
           'name' => $request->get('name'),
-          'information' => $request->get('information'),
-          'date_of_birth' => date("Y-m-d H:i:s", strtotime($request->get('date_of_birth'))),
+          'information' => $request->get('information') ? $request->get('information') : '',
+          'date_of_birth' => date($request->get('dob')),
           'position' => $request->get('position'),
           'phone' => $request->get('phone'),
           'gender' => $request->get('gender'),
@@ -72,7 +74,7 @@ class MemberController extends Controller
             }
         }
         $member->save();
-        return response()->json('Member Added Successfully.');
+        return response()->json(['status' => true, 'message' => 'Member Added Successfully.']);
     }
 
     /**
@@ -108,10 +110,11 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate(self::RULES);
         $member = Member::find($id);
         $member->name = $request->get('name');
         $member->information = $request->get('information');
-        $member->date_of_birth = date("Y-m-d H:i:s", strtotime($request->get('dob')));
+        $member->date_of_birth =date($request->get('dob'));
         $member->position = $request->get('position');
         $member->phone = $request->get('phone');
         $member->gender = $request->get('gender');
@@ -137,7 +140,7 @@ class MemberController extends Controller
         }
         $member->save();
 
-        return response()->json('Member Updated Successfully.');
+        return response()->json(['status' => true, 'message' => 'Member Updated Successfully.']);
     }
 
     /**
@@ -149,9 +152,10 @@ class MemberController extends Controller
     public function destroy($id)
     {
       $member = Member::find($id);
+      $member->projects()->detach();
       $member->delete();
 
-      return response()->json('Member Deleted Successfully.');
+      return response()->json(['status' => true, 'message' => 'Member Deleted Successfully.']);
     }
 
     public function members()
@@ -167,4 +171,14 @@ class MemberController extends Controller
     {
         return view('member/index', ['title' => 'Edit  Member']);
     }
+
+    const RULES = [
+      'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:50',
+      'avatar' => 'avatarFile:jpg,png,gif,jpeg|max:10240',
+      'dob' => 'required|date|Older60YearOlds|notEarlyThanToday',
+      'information' => 'max:300',
+      'position' => 'required|in:intern,junior,senior,pm,ceo,cto,bo',
+      'phone' => 'required|max:20|regex:/^[0-9-.\/\+\(\) ]+$/u',
+      'gender' => 'required|in:1,2',
+    ];
 }

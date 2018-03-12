@@ -40,7 +40,7 @@ class DisplayProject extends Component {
  }
  render(){
   return (
-    <div>
+    <div className="invoice">
     <div className="row">
     <div className="col-md-10"></div>
     <div className="col-md-2">
@@ -54,7 +54,7 @@ class DisplayProject extends Component {
     <thead>
       <tr>
         <td>Name</td>
-        <td>Information</td>
+        <td width="30%">Information</td>
         <td>Deadline</td>
         <td>Type</td>
         <td>Status</td>

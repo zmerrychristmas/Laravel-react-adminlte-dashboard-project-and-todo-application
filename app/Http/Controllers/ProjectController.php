@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Project;
 use App\Member;
 
+
 class ProjectController extends Controller
 {
     /**
@@ -16,31 +17,31 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->get('pid')) {
-            $projects = Project::find(16);
-            $projects->members->pluck('id')->toArray();
+      if ($request->get('pid')) {
+        $projects = Project::find(16);
+        $projects->members->pluck('id')->toArray();
+      }
+      $projects = Project::all();
+      $messages = [];
+      $action = $request->get('ACTION');
+      switch($action) {
+        case 1: {
+          $messages[] = 'Create project successfully !';
+          break;
         }
-        $projects = Project::all();
-        $messages = [];
-        $action = $request->get('ACTION');
-        switch($action) {
-            case 1: {
-                $messages[] = 'Create project successfully !';
-                break;
-            }
-            case 2: {
-                $messages[] = 'Update project successfully !';
-                break;
-            }
-            default: {
-                break;
-            }
+        case 2: {
+          $messages[] = 'Update project successfully !';
+          break;
         }
-        $result = [
-            'projects' => $projects,
-            'messages' => $messages
-        ];
-        return response()->json($result);
+        default: {
+          break;
+        }
+      }
+      $result = [
+      'projects' => $projects,
+      'messages' => $messages
+      ];
+      return response()->json($result);
     }
 
     /**
@@ -51,16 +52,17 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $project = new Project([
-          'name' => $request->get('name'),
-          'information' => $request->get('information'),
-          'deadline' => $request->get('deadline'),
-          'type' => $request->get('type'),
-          'status' => $request->get('status')
+      $request->validate(self::RULES);
+      $project = new Project([
+        'name' => $request->get('name'),
+        'information' => $request->get('information'),
+        'deadline' => $request->get('deadline'),
+        'type' => $request->get('type'),
+        'status' => $request->get('status')
         ]);
-        $project->save();
+      $project->save();
 
-        return response()->json('Project Added Successfully.');
+      return response()->json(['status' => true, 'message' => 'Project Added Successfully.']);
     }
 
     /**
@@ -71,8 +73,13 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::find($id);
-        return response()->json($project);
+      $project = Project::find($id);
+      $member_roles = DB::table('project_member')
+      ->join('member', 'member.id', '=', 'project_member.member_id')
+      ->select('project_member.member_id', 'project_member.project_id', 'member.name', 'project_member.role', 'project_member.id as pm_id')
+      ->where('project_id', '=', $id)->get();
+
+      return response()->json(['project' => $project, 'member_roles' => $member_roles]);
     }
 
     /**
@@ -83,8 +90,8 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        $project = Project::find($id);
-        return response()->json($project);
+      $project = Project::find($id);
+      return response()->json($project);
     }
 
     /**
@@ -96,15 +103,16 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $project = Project::find($id);
-        $project->name = $request->get('name');
-        $project->information = $request->get('information');
-        $project->deadline = $request->get('deadline');
-        $project->type = $request->get('type');
-        $project->status = $request->get('status');
-        $project->save();
+      $request->validate(self::RULES);
+      $project = Project::find($id);
+      $project->name = $request->get('name');
+      $project->information = $request->get('information');
+      $project->deadline = $request->get('deadline');
+      $project->type = $request->get('type');
+      $project->status = $request->get('status');
+      $project->save();
 
-        return response()->json('Product Updated Successfully.');
+      return response()->json(['status' => true, 'message' => 'Product Updated Successfully.']);
     }
 
     /**
@@ -116,47 +124,86 @@ class ProjectController extends Controller
     public function destroy($id)
     {
       $project = Project::find($id);
+      $project->members()->detach();
       $project->delete();
 
-      return response()->json('Project Deleted Successfully.');
+      return response()->json(['status' => true, 'message' => 'Project Deleted Successfully.']);
     }
 
     public function assignMember(Request $request)
     {
-        $idMember = $request->get('member_id');
-        $idProject = $request->get('project_id');
-        $project = Project::find($idProject);
-        $member = Member::find($idMember);
-        if ($member && $project) {
-            DB::table('project_member')->insert(
-            [
-                'project_id' => $idProject,
-                'member_id' => $idMember,
-                'role' => $request->get('role'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
-            return response()->json('Assign Successfully.');
+      $rules = [
+      'project_id' => 'required',
+      'member_id' => 'required',
+      'role' => 'required'
+      ];
+      $result = $request->validate($rules);
+      $idMember = $request->get('member_id');
+      $idProject = $request->get('project_id');
+      $project = Project::find($idProject);
+      $member = Member::find($idMember);
+      if ($member && $project) {
+        DB::table('project_member')->insert(
+          [
+          'project_id' => $idProject,
+          'member_id' => $idMember,
+          'role' => $request->get('role'),
+          'created_at' => date('Y-m-d H:i:s'),
+          'updated_at' => date('Y-m-d H:i:s')
+          ]);
+        return response()->json(['status' => true, 'message' => 'Assign Successfully.']);
+      }
+      return response()->json(['status' => true, 'message' => "Faild to assign, check your's input"]);
+    }
+
+    public function detach(Request $request)
+    {
+      $member_role = false;
+      if ($request->get('pm_id')) {
+        $member_role = DB::table('project_member')->where('id', '=', $member_role_id)->delete();
+        if ($member_role) {
+          return response()->json(['status' => true, 'messages' => 'Unassign Successfully.']);
         }
-        return response()->json("Faild to assign, check your's input");
+      }
+      if ($request->get('member_id') && $request->get('project_id')) {
+        $member_role = DB::table('project_member')->where('member_id', '=', $request->get('member_id'))
+        ->where('project_id', '=', $request->get('project_id'))->delete();
+        if ($member_role) {
+          return response()->json(['status' => true, 'messages' => 'Unassign Successfully.']);
+        }
+      }
+      return response()->json(['status' => false, 'messages' => 'Failed to unassign Successfully.']);
     }
 
     public function projects()
     {
-        return view('project/index', ['title' => 'Projects']);
+      return view('project/index', ['title' => 'Projects']);
     }
 
     public function newProject()
     {
-        return view('project/index', ['title' => 'Create  Project']);
+      return view('project/index', ['title' => 'Create  Project']);
     }
 
     public function editProject()
     {
-        return view('project/index', ['title' => 'Edit  Project']);
+      return view('project/index', ['title' => 'Edit  Project']);
     }
     public function assign()
     {
-        return view('project/index', ['title' => 'Assign Member To Project']);
+      return view('project/index', ['title' => 'Assign Member To Project']);
     }
-}
+
+    public function detail()
+    {
+      return view('project/detail', ['title' => 'Detail Project']);
+    }
+
+    const RULES = [
+      'name' => 'regex:/^[a-zA-Z0-9-. ]+$/u|max:10',
+      'information' => 'max:300',
+      'deadline' => 'date',
+      'type' => 'required|in:lab,single,acceptance',
+      'status' => 'required|in:1,2,3,4,5',
+    ];
+  }

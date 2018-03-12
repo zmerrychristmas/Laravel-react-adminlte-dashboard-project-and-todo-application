@@ -12,7 +12,9 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
+    'avatar_file' => 'The file must have an extendsion jpg, png, gif',
+    'not_early_than_today'  => 'The date canot early than today',
+    'older60_year_olds'       => 'The date should not older than 60 years old',
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',
     'after'                => 'The :attribute must be a date after :date.',

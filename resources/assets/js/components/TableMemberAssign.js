@@ -3,39 +3,30 @@ import { Link } from 'react-router';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 
-class TableRow extends Component {
+class TableMemberAssign extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  dateofbirth(date_of_birth) {
-    date_of_birth = date_of_birth.split(" ");
-    return date_of_birth[0];
   }
   handleSubmit(event) {
     event.preventDefault();
     var result = confirm("Want to delete?");
     if (result) {
-      let uri = MyGlobleSetting.url + `/api/members/${this.props.obj.id}`;
+      let uri = MyGlobleSetting.url + `/api/project/detach?member_id=${this.props.obj.member_id}&project_id=${this.props.obj.project_id}`;
       axios.delete(uri).then(response => {
-        $('#member_' + this.props.obj.id).remove();
+        $('#member_role' + this.props.obj.id).remove();
         $('.alert-success').remove();
        }).catch(function (error) {
          console.log(error);
       });
-      browserHistory.push('/members');
     }
   }
   render() {
     return (
-      <tr id={"member_" + this.props.obj.id}><td><img src={this.props.obj.avatar} className="img-rounded"/></td>
+      <tr id={"member_role" + this.props.obj.id}>
       <td>{this.props.obj.name}</td>
-      <td>{this.props.obj.phone}</td>
-      <td>{this.dateofbirth(this.props.obj.date_of_birth)}</td>
-      <td>{this.props.obj.position}</td>
-      <td>{this.props.obj.gender == 1 ? 'Male' : 'Female'}</td>
+      <td>{this.props.obj.role}</td>
       <td><form onSubmit={this.handleSubmit} method="delete">
-      <Link to={"/members/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>&nbsp;
       <input type="submit" value="Delete" className="btn btn-danger"/>
       </form></td>
       </tr>
@@ -43,4 +34,4 @@ class TableRow extends Component {
     }
   }
 
-  export default TableRow;
+  export default TableMemberAssign;
