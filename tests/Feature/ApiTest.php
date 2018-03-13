@@ -492,7 +492,7 @@ class ApiTest extends TestCase
             'position' => 'intern',
             'phone' => '0965841492',
             'gender' => 2,
-            'avatar' =>  new UploadedFile('/home/sunshine/Downloads/thank_you_3.jpg', 'thank_you_3.jpg', "image/jpg", 70, null, true)
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/thank_you_3.jpg', 'thank_you_3.jpg', "image/jpg", 70, null, true)
             ]);
         $response->assertStatus(200)
         ->assertJson(['status' => true, 'message' => 'Member Added Successfully.']);
@@ -511,7 +511,7 @@ class ApiTest extends TestCase
             'position' => 'intern',
             'phone' => '0965841492',
             'gender' => 2,
-            'avatar' =>  new UploadedFile('/home/sunshine/Downloads/53604.pdf', '53604.pdf', "application/pdf", 70, null, true)
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.pdf', "application/pdf", 70, null, true)
             ]);
         $response->assertStatus(422)
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
@@ -528,9 +528,29 @@ class ApiTest extends TestCase
             'position' => 'intern',
             'phone' => '0965841492',
             'gender' => 2,
-            'avatar' =>  new UploadedFile('/home/sunshine/Downloads/53604.pdf', '53604.jpg', "application/pdf", 70, null, true)
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.jpg', "application/pdf", 70, null, true)
             ]);
         $response->assertStatus(422)
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
+    }
+
+    /**
+     * @depends testCreateMember
+     */
+    function testFailUploadFileByFileSizeOver10Mb()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/Chartley_Castle-1.jpg', 'Chartley_Castle-1.jpg', "image/jpg", 70, null, true)
+            ]);
+        $response->assertStatus(422)
+        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The avatar may not be greater than 10240 kilobytes."]]]);
     }
 }
