@@ -104,7 +104,6 @@ class AssignMember extends Component {
     });
   }
   setErrors() {
-    console.log('1234');
   }
   render() {
     return (

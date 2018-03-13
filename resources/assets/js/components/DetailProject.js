@@ -22,27 +22,21 @@ class DetailProject extends Component {
     switch(status) {
       case '1': {
         return 'planend';
-        break;
       }
       case '2': {
         return 'onhold';
-        break;
       }
       case '3': {
         return 'doing';
-        break;
       }
       case '4': {
         return 'done';
-        break;
       }
       case '5': {
         return 'cancelled';
-        break;
       }
       default : {
         return status;
-        break;
       }
     }
   }

@@ -110,9 +110,12 @@ class ProjectController extends Controller
             $project->deadline = $request->get('deadline');
             $project->type = $request->get('type');
             $project->status = $request->get('status');
-            $project->save();
+            if ($project->save()) {
+                return response()->json(['status' => true, 'message' => 'Product Updated Successfully.']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Product Updated Fail.']);
+            }
 
-            return response()->json(['status' => true, 'message' => 'Product Updated Successfully.']);
         }
 
         /**
@@ -125,9 +128,12 @@ class ProjectController extends Controller
         {
             $project = Project::find($id);
             $project->members()->detach();
-            $project->delete();
+            if($project->delete()) {
+                return response()->json(['status' => true, 'message' => 'Project Deleted Successfully.']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Project Deleted Fail.']);
+            }
 
-            return response()->json(['status' => true, 'message' => 'Project Deleted Successfully.']);
         }
 
         public function assignMember(Request $request)

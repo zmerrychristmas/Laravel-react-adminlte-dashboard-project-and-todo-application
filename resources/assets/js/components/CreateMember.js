@@ -64,7 +64,7 @@ class CreateMember extends Component {
     formData.append('phone',this.state.memberPhone);
     formData.append('position',this.state.memberPosition);
     formData.append('gender',this.state.memberGender);
-    formData.append('MAX_FILE_SIZE',20907152);
+    formData.append('MAX_FILE_SIZE',10240);
     const config = {
         headers: {
             'content-type': 'multipart/form-data'
