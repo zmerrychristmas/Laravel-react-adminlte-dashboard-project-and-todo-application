@@ -14,14 +14,16 @@ class ApiTest extends TestCase
     {
         $response = $this->json('GET', '/api/members');
         $response->assertStatus(200);
+        $string = '{"members":[{"id":1,"name":"Nguyen Thien Kim","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null},{"id":2,"name":"Nguyen Thien Phuc","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null}],"messages":[]}';
+        $this->assertSame($string, $response->getContent());
     }
 
     function testCreateMember()
     {
-        $name = time();
+        $name = 'Nguyen Hai Minh';
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
         ->json('POST', '/api/members', [
-            'name' => 'test' . $name ,
+            'name' => $name ,
             'information' => 'test',
             'dob' => '1992-09-27',
             'position' => 'intern',
@@ -57,7 +59,7 @@ class ApiTest extends TestCase
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
         ->json('POST', '/api/members', [
-            'name' => 'test' . $name ,
+            'name' => $name ,
             'information' => 'test',
             'dob' => '1992-09-27',
             'position' => 'intern',
@@ -76,7 +78,7 @@ class ApiTest extends TestCase
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
         ->json('POST', '/api/members', [
-            'name' => 'test' . $name ,
+            'name' => $name ,
             'information' => '1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901',
             'dob' => '1992-09-27',
             'position' => 'intern',
@@ -227,7 +229,7 @@ class ApiTest extends TestCase
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
         ->json('POST', '/api/members/' . $id, [
-            'name' => 'test' . $name ,
+            'name' => $name ,
             'information' => '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
             'dob' => '1992-09-27',
             'position' => 'intern',
@@ -274,6 +276,8 @@ class ApiTest extends TestCase
     {
         $response = $this->json('GET', '/api/projects');
         $response->assertStatus(200);
+        $string = '{"projects":[{"id":1,"name":"Project A","information":"test1","deadline":"2018-09-27 00:00:00","type":"lab","status":"1","created_at":"1990-09-27 00:00:00","updated_at":"1990-09-27 00:00:00"},{"id":2,"name":"Project B","information":"test2","deadline":"2018-09-27 00:00:00","type":"lab","status":"1","created_at":"1990-09-27 00:00:00","updated_at":"1990-09-27 00:00:00"}],"messages":[],"members":[]}';
+        $this->assertSame($string, $response->getContent());
     }
 
     function testCreateProject()
@@ -452,7 +456,7 @@ class ApiTest extends TestCase
     /**
      * @depends testCreateMember
      */
-    function deleteMember($id)
+    function testDeleteMember($id)
     {
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
         ->json('DELETE', '/api/members/' . $id);
@@ -492,6 +496,9 @@ class ApiTest extends TestCase
             ]);
         $response->assertStatus(200)
         ->assertJson(['status' => true, 'message' => 'Member Added Successfully.']);
+        $id = DB::getPdo()->lastInsertId();
+        $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('DELETE', '/api/members/' . $id);
     }
     function testFailUploadFileByFileType()
     {
@@ -505,6 +512,23 @@ class ApiTest extends TestCase
             'phone' => '0965841492',
             'gender' => 2,
             'avatar' =>  new UploadedFile('/home/sunshine/Downloads/53604.pdf', '53604.pdf', "application/pdf", 70, null, true)
+            ]);
+        $response->assertStatus(422)
+        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
+    }
+
+    function testFailUploadFileByFileChangeType()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile('/home/sunshine/Downloads/53604.pdf', '53604.jpg', "application/pdf", 70, null, true)
             ]);
         $response->assertStatus(422)
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
