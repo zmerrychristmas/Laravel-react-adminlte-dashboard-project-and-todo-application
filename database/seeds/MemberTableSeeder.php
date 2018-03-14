@@ -18,7 +18,7 @@ class MemberTableSeeder extends Seeder{
             'position' => 'intern',
             'phone' => '0965841492',
             'gender' => 1,
-            'avatar' => 'images/default.png'
+            'avatar' => 'storage/images/default.png'
         ));
 
         $name = 'Nguyen Thien Phuc';
@@ -29,7 +29,7 @@ class MemberTableSeeder extends Seeder{
             'position' => 'intern',
             'phone' => '0965841492',
             'gender' => 1,
-            'avatar' => 'images/default.png'
+            'avatar' => 'storage/images/default.png'
         ));
     }
 }

@@ -105,15 +105,19 @@ class ProjectController extends Controller
         {
             $request->validate(self::RULES);
             $project = Project::find($id);
-            $project->name = $request->get('name');
-            $project->information = $request->get('information');
-            $project->deadline = $request->get('deadline');
-            $project->type = $request->get('type');
-            $project->status = $request->get('status');
-            if ($project->save()) {
-                return response()->json(['status' => true, 'message' => 'Product Updated Successfully.']);
+            if ($project) {
+                $project->name = $request->get('name');
+                $project->information = $request->get('information');
+                $project->deadline = $request->get('deadline');
+                $project->type = $request->get('type');
+                $project->status = $request->get('status');
+                if ($project->save()) {
+                    return response()->json(['status' => true, 'message' => 'Product Updated Successfully.']);
+                } else {
+                    return response()->json(['status' => false, 'message' => 'Product Updated Fail.']);
+                }
             } else {
-                return response()->json(['status' => false, 'message' => 'Product Updated Fail.']);
+                return response()->json(['status' => false, 'message' => 'Project Do not exists.']);
             }
 
         }
@@ -152,7 +156,7 @@ class ProjectController extends Controller
                 Project::addMember($idProject, $idMember, $request->get('role'));
                 return response()->json(['status' => true, 'message' => 'Assign Successfully.']);
             }
-            return response()->json(['status' => true, 'message' => "Faild to assign, check your's input"]);
+            return response()->json(['status' => false, 'message' => "Faild to assign, need give correct information about project and member."]);
         }
 
         public function detach(Request $request)

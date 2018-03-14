@@ -23,7 +23,7 @@ class ValidatorServiceProvider extends ServiceProvider {
         });
         $this->app['validator']->extend('avatarFile', function ($attribute, $value, $parameters)
         {
-            if ($value->isValid()) {
+            if (is_object($value) && $value->isValid()) {
                 $ext = $value->getClientMimeType();
                 $ext = explode('/', $ext);
                 $ext = isset($ext[1]) ? $ext[1] : $ext[0];

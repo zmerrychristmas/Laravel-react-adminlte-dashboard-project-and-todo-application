@@ -4,11 +4,12 @@ import { Link } from 'react-router';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 import $ from 'jquery';
+import DatePicker from 'react-bootstrap-date-picker';
 
 class UpdateProject extends Component {
   constructor(props) {
    super(props);
-   this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1', errors: ''};
+   this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1', errors: '', formattedValue: ''};
 
    this.handleChangeName = this.handleChangeName.bind(this);
    this.handleChangeInformation = this.handleChangeInformation.bind(this);
@@ -22,7 +23,9 @@ class UpdateProject extends Component {
   axios.get(MyGlobleSetting.url + `/api/projects/${this.props.params.id}`)
   .then(response => {
     console.log(response);
-    this.setState({ projectName: response.data.project.name, projectInformation: response.data.project.information, projectDeadline: response.data.project.deadline.split(" ")[0], projectType: response.data.project.type, projectStatus: response.data.project.status });
+    this.setState({ projectName: response.data.project.name, projectInformation: response.data.project.information, formattedValue: response.data.project.deadline.split(" ")[0], projectType: response.data.project.type, projectStatus: response.data.project.status });
+      this.state.projectDeadline = new Date(this.state.formattedValue);
+      this.setState({projectDeadline: this.state.projectDeadline.toISOString()});
   }).catch(error => {
       this.setState({
         errors: error.response.data.errors
@@ -39,9 +42,10 @@ handleChangeInformation(e){
     projectInformation: e.target.value
   })
 }
-handleChangeDeadline(e){
+handleChangeDeadline(e, formattedValue){
   this.setState({
-    projectDeadline: e.target.value
+    projectDeadline: e,
+    formattedValue: formattedValue
   })
 }
 handleChangeType(e){
@@ -58,10 +62,9 @@ handleChangeStatus(e){
 handleSubmit(e) {
   e.preventDefault();
   const formData = new FormData();
-  this.state.projectDeadline = $('#deadline').val();
   formData.append('name',this.state.projectName);
   formData.append('information',this.state.projectInformation);
-  formData.append('deadline',this.state.projectDeadline);
+  formData.append('deadline',this.state.formattedValue);
   formData.append('type',this.state.projectType);
   formData.append('status',this.state.projectStatus);
   formData.append('_method', 'PUT');
@@ -94,7 +97,7 @@ render(){
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="deadline">Deadline:</label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangeDeadline} value={this.state.projectDeadline} className="form-control datepicker" id="deadline" name="deadline" placeholder="Enter Deadline" />
+              <DatePicker id="example-datepicker" onChange={this.handleChangeDeadline} dateFormat="YYYY-MM-DD" value={this.state.projectDeadline}/>
               <p className="error">{this.state.errors.deadline}</p>
             </div>
           </div>

@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
-
+import DatePicker from 'react-bootstrap-date-picker';
 
 class CreateMember extends Component {
   constructor(props){
     super(props);
-    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors:  {name: '', avatar: '', information: '', gender: '', dob: '', position: ''}};
+    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors:  {name: '', avatar: '', information: '', gender: '', dob: '', position: '', formattedValue: ''}};
 
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
@@ -33,9 +33,10 @@ class CreateMember extends Component {
       memberPhone: e.target.value
     })
   }
-  handleChangeDob(e){
+  handleChangeDob(e, formattedValue){
     this.setState({
-      memberDob: e.target.value
+      memberDob: e,
+      formattedValue: formattedValue
     })
   }
   handleChangePosition(e){
@@ -60,7 +61,7 @@ class CreateMember extends Component {
     formData.append('name',this.state.memberName);
     formData.append('information',this.state.memberInformation);
     formData.append('avatar',this.state.memberAvatar);
-    formData.append('dob',this.state.memberDob);
+    formData.append('dob',this.state.formattedValue);
     formData.append('phone',this.state.memberPhone);
     formData.append('position',this.state.memberPosition);
     formData.append('gender',this.state.memberGender);
@@ -115,7 +116,7 @@ class CreateMember extends Component {
           <div className="form-group">
             <label className="control-label col-sm-2 datepicker" required="required" htmlFor="date_of_birth">Date of birth:</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control datepicker" onChange={this.handleChangeDob} id="date_of_birth" name="date_of_birth" placeholder="Enter Date of birth" value={this.state.memberDob} />
+              <DatePicker id="example-datepicker" onChange={this.handleChangeDob} dateFormat="YYYY-MM-DD" value={this.state.memberDob}/>
               <p className="error">{this.state.errors.dob}</p>
             </div>
           </div>

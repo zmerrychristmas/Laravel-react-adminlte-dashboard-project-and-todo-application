@@ -14,7 +14,7 @@ class ApiTest extends TestCase
     {
         $response = $this->json('GET', '/api/members');
         $response->assertStatus(200);
-        $string = '{"members":[{"id":1,"name":"Nguyen Thien Kim","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null},{"id":2,"name":"Nguyen Thien Phuc","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null}],"messages":[]}';
+        $string = '{"members":[{"id":1,"name":"Nguyen Thien Kim","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"storage\/images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null},{"id":2,"name":"Nguyen Thien Phuc","information":"test","phone":"0965841492","date_of_birth":"1992-09-27 00:00:00","avatar":"storage\/images\/default.png","position":"intern","gender":1,"created_at":null,"updated_at":null}],"messages":[]}';
         $this->assertSame($string, $response->getContent());
     }
 
@@ -35,7 +35,7 @@ class ApiTest extends TestCase
         return DB::getPdo()->lastInsertId();
     }
 
-    function testCreateMemberFailName()
+    function testCreateMemberFailNameFormat()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -54,7 +54,45 @@ class ApiTest extends TestCase
             ]);
     }
 
-    function testCreateMemberFailPhone()
+    function testCreateMemberFailNameEmpty()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => '' ,
+            'information' => 'test',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 1,
+            ]);
+        $response->assertStatus(422)
+        ->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => ['name' => ['The name format is invalid.']]
+            ]);
+    }
+
+    function testCreateMemberFailNameOverLenght50Character()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1p                                                 1' ,
+            'information' => 'test',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 1,
+            ]);
+        $response->assertStatus(422)
+        ->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => ['name' => ['The name may not be greater than 50 characters.']]
+            ]);
+    }
+
+    function testCreateMemberFailPhoneNotAllowedCharacter()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -70,6 +108,60 @@ class ApiTest extends TestCase
         ->assertJson([
             'message' => 'The given data was invalid.',
             'errors' => ['phone' => ['The phone format is invalid.']]
+            ]);
+    }
+
+    function testCreateMemberFailPhoneOver20Character()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => '123456789012345678901' ,
+            'information' => 'test',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '123456789012345678901',
+            'gender' => 1,
+            ]);
+        $response->assertStatus(422)
+        ->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => ['phone' => ['The phone may not be greater than 20 characters.']]
+            ]);
+    }
+
+    public function testCreateMemberWithEmptyFields()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => '' ,
+            'information' => '',
+            'dob' => '',
+            'position' => '',
+            'phone' => '',
+            'gender' => '',
+            ]);
+        $response->assertStatus(422)
+        ->assertJson([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                    "name" => [
+                                "The name format is invalid."
+                            ],
+                    "dob" => [
+                        "The dob field is required."
+                    ],
+                    "position" => [
+                        "The position field is required."
+                    ],
+                    "phone" => [
+                        "The phone field is required."
+                    ],
+                    "gender" => [
+                        "The gender field is required."
+                    ]
+                ]
             ]);
     }
 
@@ -147,7 +239,7 @@ class ApiTest extends TestCase
             ]);
     }
 
-    function testCreateMemberFailDateOlderThan60years1()
+    function testCreateMemberFailDateOlderThan60years()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -165,7 +257,7 @@ class ApiTest extends TestCase
             'errors' => ['dob' => ['The date should not older than 60 years old']]
             ]);
     }
-    function testCreateMemberFailDateOlderThan60years2()
+    function testCreateMemberFailDateOlder61Years()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -183,7 +275,7 @@ class ApiTest extends TestCase
             'errors' => ['dob' => ['The date should not older than 60 years old']]
             ]);
     }
-    function testCreateMemberDateClose60years()
+    function testCreateMemberDate60years()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -202,7 +294,7 @@ class ApiTest extends TestCase
         ->json('DELETE', '/api/members/' . $id);
     }
 
-    function testCreateFailDateTooYoung()
+    function testCreateMemberFailDateTooYoung()
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -244,10 +336,83 @@ class ApiTest extends TestCase
             ]);
     }
 
+    function testUploadFile()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/thank_you_3.jpg', 'thank_you_3.jpg', "image/jpg", 70, null, true)
+            ]);
+        $response->assertStatus(200)
+        ->assertJson(['status' => true, 'message' => 'Member Added Successfully.']);
+        $id = DB::getPdo()->lastInsertId();
+        $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('DELETE', '/api/members/' . $id);
+    }
+    function testFailUploadFileByFileType()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.pdf', "application/pdf", 70, null, true)
+            ]);
+        $response->assertStatus(422)
+        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
+    }
+
+    function testFailUploadFileByFileChangeType()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.jpg', "application/pdf", 70, null, true)
+            ]);
+        $response->assertStatus(422)
+        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
+    }
+
     /**
      * @depends testCreateMember
      */
-    function testUpdateFailNameDatePhoneGenderPositionMember($id)
+    function testFailUploadFileByFileSizeOver10Mb()
+    {
+        $name = time();
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/members', [
+            'name' => 'upload' . $name ,
+            'information' => '1234567891',
+            'dob' => '1992-09-27',
+            'position' => 'intern',
+            'phone' => '0965841492',
+            'gender' => 2,
+            'avatar' =>  new UploadedFile(base_path('tests/data') . '/Chartley_Castle-1.jpg', 'Chartley_Castle-1.jpg', "image/jpg", 70, null, true)
+            ]);
+        $response->assertStatus(422)
+        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The avatar may not be greater than 10240 kilobytes."]]]);
+    }
+
+    /**
+     * @depends testCreateMember
+     */
+    function testUpdateMemberFailNameDatePhoneGenderPosition($id)
     {
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -296,6 +461,38 @@ class ApiTest extends TestCase
         return DB::getPdo()->lastInsertId();
     }
 
+    function testCreateProjectWithEmptyFields()
+    {
+        $name = rand(0, 9999999999);
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/projects', [
+            'name' => '' ,
+            'information' => '',
+            'deadline' => '',
+            'type' => '',
+            'status' => ''
+            ]);
+        $response->assertStatus(422)
+        ->assertJson([
+            "message" => "The given data was invalid.",
+            "errors" => [
+                "name" => [
+                    "The name format is invalid."
+                ],
+                "deadline" => [
+                    "The deadline is not a valid date."
+                ],
+                "type" => [
+                    "The type field is required."
+                ],
+                "status" => [
+                    "The status field is required."
+                ]
+            ]
+        ]);
+        return DB::getPdo()->lastInsertId();
+    }
+
     function testCreateProjectFailName()
     {
         $name = "12345678910";
@@ -311,7 +508,7 @@ class ApiTest extends TestCase
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["name"=>["The name may not be greater than 10 characters."]]]);
     }
 
-    function testCreateProjectFailOverTenCharacterName()
+    function testCreateProjectFailNameOverTenCharacterName()
     {
         $name = "123456789+";
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -326,7 +523,7 @@ class ApiTest extends TestCase
         ->assertJson(["message"=>"The given data was invalid.","errors"=>["name"=>["The name format is invalid."]]]);
     }
 
-    function testCreateFailInformation()
+    function testCreateProjectFailInformation()
     {
         $name = rand(0, 9999999999);
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -424,6 +621,24 @@ class ApiTest extends TestCase
     * @depends testCreateMember
     * @depends testCreateProject
     */
+    function testAssignWrongType($pid, $mid)
+    {
+        $name = rand(0, 9999999999);
+        $id = 1000;
+        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
+        ->json('POST', '/api/project/assign', [
+            'project_id' => $pid,
+            'member_id' => $mid,
+            'role' => 'dev1212'
+            ]);
+        $response->assertStatus(200)
+        ->assertJson(['status' => false, 'message' => 'Faild to assign, need give correct information about project and member.']);
+    }
+
+    /**
+    * @depends testCreateMember
+    * @depends testCreateProject
+    */
     function assign($m_id, $p_id)
     {
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
@@ -481,76 +696,55 @@ class ApiTest extends TestCase
             ]);
     }
 
-    function testUploadFile()
+    function testUpdateMemberDoNotExists()
     {
+        $id = 1000;
         $name = time();
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('POST', '/api/members', [
-            'name' => 'upload' . $name ,
-            'information' => '1234567891',
+        ->json('POST', '/api/members/1000', [
+            'name' => $name ,
+            'information' => '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
             'dob' => '1992-09-27',
             'position' => 'intern',
             'phone' => '0965841492',
-            'gender' => 2,
-            'avatar' =>  new UploadedFile(base_path('tests/data') . '/thank_you_3.jpg', 'thank_you_3.jpg', "image/jpg", 70, null, true)
+            'gender' => 1,
+            '_method' => 'PUT'
             ]);
         $response->assertStatus(200)
-        ->assertJson(['status' => true, 'message' => 'Member Added Successfully.']);
-        $id = DB::getPdo()->lastInsertId();
-        $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('DELETE', '/api/members/' . $id);
-    }
-    function testFailUploadFileByFileType()
-    {
-        $name = time();
-        $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('POST', '/api/members', [
-            'name' => 'upload' . $name ,
-            'information' => '1234567891',
-            'dob' => '1992-09-27',
-            'position' => 'intern',
-            'phone' => '0965841492',
-            'gender' => 2,
-            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.pdf', "application/pdf", 70, null, true)
+        ->assertJson([
+            'status' => false,
+            'message' => 'Member update do not exists.'
             ]);
-        $response->assertStatus(422)
-        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
     }
 
-    function testFailUploadFileByFileChangeType()
+    function testUpdateProjectDoNotExists()
     {
-        $name = time();
+        $name = rand(0, 9999999999);
+        $id = 1000;
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('POST', '/api/members', [
-            'name' => 'upload' . $name ,
-            'information' => '1234567891',
-            'dob' => '1992-09-27',
-            'position' => 'intern',
-            'phone' => '0965841492',
-            'gender' => 2,
-            'avatar' =>  new UploadedFile(base_path('tests/data') . '/53604.pdf', '53604.jpg', "application/pdf", 70, null, true)
+        ->json('POST', '/api/projects/' . $id, [
+            'name' => $name ,
+            'information' => 'test',
+            'deadline' => '2018-09-27',
+            'type' => 'lab',
+            'status' => 1,
+            '_method' => 'PUT'
             ]);
-        $response->assertStatus(422)
-        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The file must have an extendsion jpg, png, gif"]]]);
+        $response->assertStatus(200)
+        ->assertJson(['status' => false, 'message' => 'Project Do not exists.']);
     }
 
-    /**
-     * @depends testCreateMember
-     */
-    function testFailUploadFileByFileSizeOver10Mb()
+    function testAssignNotExists()
     {
-        $name = time();
+        $name = rand(0, 9999999999);
+        $id = 1000;
         $response = $this->withHeaders(['X-Requested-With', 'XMLHttpRequest'])
-        ->json('POST', '/api/members', [
-            'name' => 'upload' . $name ,
-            'information' => '1234567891',
-            'dob' => '1992-09-27',
-            'position' => 'intern',
-            'phone' => '0965841492',
-            'gender' => 2,
-            'avatar' =>  new UploadedFile(base_path('tests/data') . '/Chartley_Castle-1.jpg', 'Chartley_Castle-1.jpg', "image/jpg", 70, null, true)
+        ->json('POST', '/api/project/assign', [
+            'project_id' => 1000,
+            'member_id' => 1000,
+            'role' => 'dev'
             ]);
-        $response->assertStatus(422)
-        ->assertJson(["message"=>"The given data was invalid.","errors"=>["avatar"=>["The avatar may not be greater than 10240 kilobytes."]]]);
+        $response->assertStatus(200)
+        ->assertJson(['status' => false, 'message' => 'Faild to assign, need give correct information about project and member.']);
     }
 }

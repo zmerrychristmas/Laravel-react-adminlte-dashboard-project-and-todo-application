@@ -116,36 +116,40 @@ class MemberController extends Controller
         {
             $request->validate(self::RULES);
             $member = Member::find($id);
-            $member->name = $request->get('name');
-            $member->information = $request->get('information');
-            $member->date_of_birth =date($request->get('dob'));
-            $member->position = $request->get('position');
-            $member->phone = $request->get('phone');
-            $member->gender = $request->get('gender');
-            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-                        // remove old images
-                $avatar_old = $member->avatar;
-                if ($avatar_old) {
-                    $avatar_old = explode('/', $avatar_old);
-                    $avatar_old = isset($avatar_old[3]) ? $avatar_old[3] : $avatar_old[0];
-                    if (file_exists(storage_path() . '/app/public/images/' . $avatar_old)) {
-                        unlink(storage_path() . '/app/public/images/' . $avatar_old);
+            if ($member) {
+                $member->name = $request->get('name');
+                $member->information = $request->get('information');
+                $member->date_of_birth =date($request->get('dob'));
+                $member->position = $request->get('position');
+                $member->phone = $request->get('phone');
+                $member->gender = $request->get('gender');
+                if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                            // remove old images
+                    $avatar_old = $member->avatar;
+                    if ($avatar_old) {
+                        $avatar_old = explode('/', $avatar_old);
+                        $avatar_old = isset($avatar_old[3]) ? $avatar_old[3] : $avatar_old[0];
+                        if (file_exists(storage_path() . '/app/public/images/' . $avatar_old)) {
+                            unlink(storage_path() . '/app/public/images/' . $avatar_old);
+                        }
                     }
-                }
-                        // add new images
-                $path = $request->file('avatar')->store('public/images');
-                if ($path) {
-                    $path = explode('/', $path);
-                    $path = isset($path[2]) ? $path[2] : $path[0];
+                            // add new images
+                    $path = $request->file('avatar')->store('public/images');
                     if ($path) {
-                        $member->avatar = '/storage/images/' . $path;
+                        $path = explode('/', $path);
+                        $path = isset($path[2]) ? $path[2] : $path[0];
+                        if ($path) {
+                            $member->avatar = '/storage/images/' . $path;
+                        }
                     }
                 }
-            }
-            if ($member->save()){
-                return response()->json(['status' => true, 'message' => 'Member Updated Successfully.']);
+                if ($member->save()){
+                    return response()->json(['status' => true, 'message' => 'Member Updated Successfully.']);
+                } else {
+                    return response()->json(['status' => false, 'message' => 'Member Updated Fail.']);
+                }
             } else {
-                return response()->json(['status' => false, 'message' => 'Member Updated Fail.']);
+                return response()->json(['status' => false, 'message' => 'Member update do not exists.']);
             }
         }
 

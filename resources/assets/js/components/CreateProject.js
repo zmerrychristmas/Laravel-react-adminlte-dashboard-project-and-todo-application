@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
+import DatePicker from 'react-bootstrap-date-picker';
 
 class CreateProject extends Component {
   constructor(props){
@@ -24,9 +25,9 @@ class CreateProject extends Component {
       projectInformation: e.target.value
     })
   }
-  handleChangeDeadline(e){
+  handleChangeDeadline(e, formattedValue){
     this.setState({
-      projectDeadline: e.target.value
+      projectDeadline: formattedValue
     })
   }
   handleChangeType(e){
@@ -42,7 +43,6 @@ class CreateProject extends Component {
   handleSubmit(e){
     e.preventDefault();
     const formData = new FormData();
-    this.state.projectDeadline = this.state.projectDeadline ? this.state.projectDeadline : $('#deadline').val();
     formData.append('name',this.state.projectName);
     formData.append('information',this.state.projectInformation);
     formData.append('deadline',this.state.projectDeadline);
@@ -84,7 +84,7 @@ class CreateProject extends Component {
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="deadline">Deadline:</label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangeDeadline} className="form-control datepicker" id="deadline" name="deadline" placeholder="Enter Deadline" />
+              <DatePicker id="example-datepicker" onChange={this.handleChangeDeadline} dateFormat="YYYY-MM-DD" value={this.state.projectDeadline}/>
                 <p className="error">{this.state.errors.deadline}</p>
             </div>
           </div>
