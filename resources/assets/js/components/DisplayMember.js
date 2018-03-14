@@ -40,7 +40,7 @@ class DisplayMember extends Component {
  }
  render(){
   return (
-    <div>
+    <div className="invoice">
     <div className="row">
     <div className="col-md-10"></div>
     <div className="col-md-2">
@@ -50,7 +50,7 @@ class DisplayMember extends Component {
     <div className="messages">
       {this.messages()}
     </div>
-    <table className="table table-hover table-bordered table-striped">
+    <table className="table table-hover table-responsive table-bordered table-striped">
     <thead>
       <tr>
         <td>Avatar</td>

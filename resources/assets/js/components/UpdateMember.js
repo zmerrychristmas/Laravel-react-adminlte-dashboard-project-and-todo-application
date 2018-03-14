@@ -4,11 +4,12 @@ import { Link } from 'react-router';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 import $ from 'jquery';
+import DatePicker from 'react-bootstrap-date-picker';
 
 class UpdateMember extends Component {
   constructor(props) {
     super(props);
-    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null};
+    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors: '', formattedValue: ''};
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
     this.handleChangePhone = this.handleChangePhone.bind(this);
@@ -22,11 +23,15 @@ class UpdateMember extends Component {
   componentDidMount(){
     axios.get(MyGlobleSetting.url + `/api/members/${this.props.params.id}`)
     .then(response => {
-      this.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, memberDob: response.data.date_of_birth, memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
+      this.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, formattedValue: response.data.date_of_birth.split(" ")[0], memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
+      this.state.memberDob = new Date(this.state.formattedValue);
+      this.setState({memberDob: this.state.memberDob.toISOString()});
+      console.log(this.state.formattedValue, this.state.memberDob);
+    }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
+    });
   }
   handleChangeName(e){
     this.setState({
@@ -43,9 +48,10 @@ class UpdateMember extends Component {
       memberPhone: e.target.value
     })
   }
-  handleChangeDob(e){
+  handleChangeDob(e, formattedValue){
     this.setState({
-      memberDob: e.target.value
+      memberDob: e,
+      formattedValue: formattedValue
     })
   }
   handleChangePosition(e){
@@ -71,26 +77,32 @@ class UpdateMember extends Component {
     formData.append('name',this.state.memberName);
     formData.append('information',this.state.memberInformation);
     formData.append('avatar',this.state.memberAvatar);
-    formData.append('dob',this.state.memberDob);
+    formData.append('dob',this.state.formattedValue);
     formData.append('phone',this.state.memberPhone);
     formData.append('position',this.state.memberPosition);
     formData.append('gender',this.state.memberGender);
+    formData.append('_method', 'PUT');
     const config = {
          'Content-Type': 'multipart/form-data'
     }
     let uri = MyGlobleSetting.url + '/api/members/' + this.props.params.id;
     axios.post(uri, formData, config).then((response) => {
       browserHistory.push('/members?ACTION=2');
+    }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
     });
   }
   render(){
     return (
-      <div>
+      <div className="invoice">
         <form onSubmit={this.handleSubmit} className="form-horizontal" >
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Name:</label>
             <div className="col-sm-10">
               <input type="text" value={this.state.memberName} className="form-control" id="name" onChange={this.handleChangeName} name="name" placeholder="Enter name" />
+              <p className="error">{this.state.errors.name}</p>
             </div>
           </div>
           <div className="form-group">
@@ -98,24 +110,28 @@ class UpdateMember extends Component {
             <div className="col-sm-10">
               <img src={this.state.memberAvatar} className="img-rounded" id="img_avatar"/>
               <input type="file" onChange={this.handleChangeAvatar} ref={this.state.memberAvatar} className="form-control" id="avatar" name="avatar"/>
+              <p className="error">{this.state.errors.avatar}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="information">Information:</label>
             <div className="col-sm-10">
               <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information" value={this.state.memberInformation}></textarea>
+              <p className="error">{this.state.errors.information}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="phone">Phone:</label>
             <div className="col-sm-10">
               <input type="text" onChange={this.handleChangePhone} value={this.state.memberPhone} className="form-control" id="phone" name="phone" placeholder="Enter Phone" />
+              <p className="error">{this.state.errors.phone}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="date_of_birth">Date of birth:</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" onChange={this.handleChangeDob} id="date_of_birth" name="date_of_birth" placeholder="Enter Date of birth" value={this.state.memberDob} />
+              <DatePicker id="example-datepicker" onChange={this.handleChangeDob} dateFormat="YYYY-MM-DD" value={this.state.memberDob}/>
+              <p className="error">{this.state.errors.dob}</p>
             </div>
           </div>
           <div className="form-group">
@@ -130,6 +146,7 @@ class UpdateMember extends Component {
                 <option value="cto">cto</option>
                 <option value="bo">bo</option>
               </select>
+              <p className="error">{this.state.errors.position}</p>
             </div>
           </div>
           <div className="form-group">
@@ -139,6 +156,7 @@ class UpdateMember extends Component {
                 <option value="1">male</option>
                 <option value="2">female</option>
               </select>
+              <p className="error">{this.state.errors.gender}</p>
             </div>
           </div>
           <div className="form-group">

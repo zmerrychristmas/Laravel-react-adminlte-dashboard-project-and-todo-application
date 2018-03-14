@@ -4,11 +4,12 @@ import { Link } from 'react-router';
 import {browserHistory} from 'react-router';
 import MyGlobleSetting from './MyGlobleSetting';
 import $ from 'jquery';
+import DatePicker from 'react-bootstrap-date-picker';
 
 class UpdateProject extends Component {
   constructor(props) {
    super(props);
-   this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1'};
+   this.state = {projectName: '', projectInformation: '', projectDeadline: '', projectType: 'lab', projectStatus: '1', errors: '', formattedValue: ''};
 
    this.handleChangeName = this.handleChangeName.bind(this);
    this.handleChangeInformation = this.handleChangeInformation.bind(this);
@@ -21,11 +22,15 @@ class UpdateProject extends Component {
  componentDidMount(){
   axios.get(MyGlobleSetting.url + `/api/projects/${this.props.params.id}`)
   .then(response => {
-    this.setState({ projectName: response.data.name, projectInformation: response.data.information, projectDeadline: response.data.deadline, projectType: response.data.type, projectStatus: response.data.status });
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
+    console.log(response);
+    this.setState({ projectName: response.data.project.name, projectInformation: response.data.project.information, formattedValue: response.data.project.deadline.split(" ")[0], projectType: response.data.project.type, projectStatus: response.data.project.status });
+      this.state.projectDeadline = new Date(this.state.formattedValue);
+      this.setState({projectDeadline: this.state.projectDeadline.toISOString()});
+  }).catch(error => {
+      this.setState({
+        errors: error.response.data.errors
+      });
+    });
 }
 handleChangeName(e){
   this.setState({
@@ -37,9 +42,10 @@ handleChangeInformation(e){
     projectInformation: e.target.value
   })
 }
-handleChangeDeadline(e){
+handleChangeDeadline(e, formattedValue){
   this.setState({
-    projectDeadline: e.target.value
+    projectDeadline: e,
+    formattedValue: formattedValue
   })
 }
 handleChangeType(e){
@@ -58,9 +64,10 @@ handleSubmit(e) {
   const formData = new FormData();
   formData.append('name',this.state.projectName);
   formData.append('information',this.state.projectInformation);
-  formData.append('deadline',this.state.projectDeadline);
+  formData.append('deadline',this.state.formattedValue);
   formData.append('type',this.state.projectType);
   formData.append('status',this.state.projectStatus);
+  formData.append('_method', 'PUT');
   const config = {
    'Content-Type': 'multipart/form-data'
  }
@@ -71,34 +78,38 @@ handleSubmit(e) {
 }
 render(){
   return (
-         <div>
+         <div className="invoice">
         <form onSubmit={this.handleSubmit} className="form-horizontal"  method="post" encType="multipart/form-data" >
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="name">Name:</label>
             <div className="col-sm-10">
               <input type="text" className="form-control" id="name" value={this.state.projectName} onChange={this.handleChangeName} name="name" placeholder="Enter name" />
+              <p className="error">{this.state.errors.name}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="information">Information:</label>
             <div className="col-sm-10">
               <textarea className="form-control" id="information" value={this.state.projectInformation} onChange={this.handleChangeInformation} name="information"></textarea>
+              <p className="error">{this.state.errors.information}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="deadline">Deadline:</label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangeDeadline} value={this.state.projectDeadline} className="form-control" id="deadline" name="deadline" placeholder="Enter Deadline" />
+              <DatePicker id="example-datepicker" onChange={this.handleChangeDeadline} dateFormat="YYYY-MM-DD" value={this.state.projectDeadline}/>
+              <p className="error">{this.state.errors.deadline}</p>
             </div>
           </div>
           <div className="form-group">
             <label className="control-label col-sm-2" htmlFor="type">Type:</label>
             <div className="col-sm-10">
-              <select className="form-control" value={this.state.projectType} name="type" id="type" onChange={this.handleChangeStatus}>
+              <select className="form-control" value={this.state.projectType} name="type" id="type" onChange={this.handleChangeType}>
                 <option value="lab">lab</option>
                 <option value="single">single</option>
                 <option value="acceptance">acceptance</option>
               </select>
+              <p className="error">{this.state.errors.type}</p>
             </div>
           </div>
           <div className="form-group">
@@ -111,7 +122,10 @@ render(){
                 <option value="4">done</option>
                 <option value="5">cancelled</option>
               </select>
+              <p className="error">{this.state.errors.status}</p>
             </div>
+          </div>
+          <div className="form-group">
           </div>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">

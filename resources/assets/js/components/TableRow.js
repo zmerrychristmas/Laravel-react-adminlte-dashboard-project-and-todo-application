@@ -8,6 +8,10 @@ class TableRow extends Component {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+  dateofbirth(date_of_birth) {
+    date_of_birth = date_of_birth.split(" ");
+    return date_of_birth[0];
+  }
   handleSubmit(event) {
     event.preventDefault();
     var result = confirm("Want to delete?");
@@ -27,11 +31,11 @@ class TableRow extends Component {
       <tr id={"member_" + this.props.obj.id}><td><img src={this.props.obj.avatar} className="img-rounded"/></td>
       <td>{this.props.obj.name}</td>
       <td>{this.props.obj.phone}</td>
-      <td>{this.props.obj.date_of_birth}</td>
+      <td>{this.dateofbirth(this.props.obj.date_of_birth)}</td>
       <td>{this.props.obj.position}</td>
-      <td>{this.props.obj.gender}</td>
+      <td>{this.props.obj.gender == 1 ? 'Male' : 'Female'}</td>
       <td><form onSubmit={this.handleSubmit} method="delete">
-      <Link to={"/members/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>
+      <Link to={"/members/edit/"+this.props.obj.id} className="btn btn-primary">Edit</Link>&nbsp;
       <input type="submit" value="Delete" className="btn btn-danger"/>
       </form></td>
       </tr>

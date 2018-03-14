@@ -16,10 +16,11 @@ Route::get('/', function () {
 });
 
 Route::get('/members', 'MemberController@members');
-Route::get('/members/new', 'MemberController@newMember');
-Route::get('/members/edit/{id}', 'MemberController@editMember');
+Route::get('/members/new', 'MemberController@members');
+Route::get('/members/edit/{id}', 'MemberController@members');
 
 Route::get('/projects', 'ProjectController@projects');
-Route::get('/projects/new', 'ProjectController@newProject');
-Route::get('/projects/edit/{id}', 'ProjectController@editProject');
-Route::get('/projects/assign', 'ProjectController@assign');
+Route::get('/projects/new', 'ProjectController@projects');
+Route::get('/projects/edit/{id}', 'ProjectController@projects');
+Route::get('/projects/assign', 'ProjectController@projects');
+Route::get('/projects/detail/{id}', 'ProjectController@projects');
