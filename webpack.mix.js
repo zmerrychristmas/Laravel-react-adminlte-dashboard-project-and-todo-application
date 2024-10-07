@@ -1,4 +1,4 @@
-let mix = require('laravel-mix');
+let mix = require("laravel-mix");
 
 /*
  |--------------------------------------------------------------------------
@@ -11,5 +11,12 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.react('resources/assets/js/app.js', 'public/js', 'resources/assets/js/components/*.js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+mix.react(
+  "resources/assets/js/app.js",
+  "public/js",
+  "resources/assets/js/components/*.js"
+);
+mix.sass("resources/assets/sass/app.scss", "public/css").options({
+  processCssUrls: false,
+  implementation: require("sass"),
+});

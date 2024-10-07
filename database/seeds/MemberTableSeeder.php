@@ -3,16 +3,18 @@
 use Illuminate\Database\Seeder;
 use App\Member;
 
-class MemberTableSeeder extends Seeder{
+class MemberTableSeeder extends Seeder
+{
 
-    public function run(){
+    public function run()
+    {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         App\Member::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('member')->delete();
-        $name = 'Nguyen Thien Kim';
+        $name = 'Nguyen Kim';
         Member::create(array(
-            'name' => $name ,
+            'name' => $name,
             'information' => 'test',
             'date_of_birth' => '1992-09-27',
             'position' => 'intern',
@@ -21,9 +23,9 @@ class MemberTableSeeder extends Seeder{
             'avatar' => 'storage/images/default.png'
         ));
 
-        $name = 'Nguyen Thien Phuc';
+        $name = 'Nguyen Phuc';
         Member::create(array(
-            'name' => $name ,
+            'name' => $name,
             'information' => 'test',
             'date_of_birth' => '1992-09-27',
             'position' => 'intern',

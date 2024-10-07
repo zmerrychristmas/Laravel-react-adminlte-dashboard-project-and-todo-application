@@ -30,9 +30,9 @@ return [
     |
     */
 
-    'logo' => '<b>Test</b>App',
+    'logo' => '<b>Laravel AdminLTE</b>',
 
-    'logo_mini' => '<b>A</b>PP',
+    'logo_mini' => '<b>CRUD</b>PP',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ return [
     |
     */
 
-    'dashboard_url' => 'home',
+    'dashboard_url' => '/',
 
     'logout_url' => 'logout',
 
@@ -175,8 +175,6 @@ return [
     */
 
     'plugins' => [
-        'datatables' => true,
-        'select2'    => true,
-        'chartjs'    => true,
+
     ],
 ];

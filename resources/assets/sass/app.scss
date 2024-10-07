@@ -5,5 +5,13 @@
 // Variables
 @import "variables";
 
+
+// Override Bootstrap Variables
+$font-size-base: 1rem; // Adjust as needed
+$line-height-base: 1.5rem; // Adjust as needed
+$nav-link-padding-y: 0.5rem; // Adjust to rem if it was in px
+$input-line-height: 1.5rem; // Ensure it's in the same unit (e.g., rem)
+$input-padding-y: 0.5rem; // Adjust to rem if it was in px
+
 // Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import "~bootstrap/scss/bootstrap";

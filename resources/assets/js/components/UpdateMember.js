@@ -1,15 +1,30 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-import { Link } from 'react-router';
-import {browserHistory} from 'react-router';
-import MyGlobleSetting from './MyGlobleSetting';
-import $ from 'jquery';
-import DatePicker from 'react-bootstrap-date-picker';
+import React, { Component } from "react";
+import axios from "axios";
+import { Link } from "react-router";
+import { browserHistory } from "react-router";
+import MyGlobleSetting from "./MyGlobleSetting";
+import $ from "jquery";
+import DatePicker from "react-datepicker";
+import { useParams, useHistory } from "react-router-dom"; // Use hooks for routing
+import moment from "moment"; // Import moment
 
 class UpdateMember extends Component {
   constructor(props) {
     super(props);
-    this.state = {memberName: '', memberInformation: '', memberPhone: '', memberDob: '', memberPosition: 'intern', memberGender: '1', memberAvatar: null, errors: '', formattedValue: ''};
+    this.state = {
+      memberName: "",
+      memberInformation: "",
+      memberPhone: "",
+      memberDob: "",
+      memberPosition: "intern",
+      memberGender: "1",
+      memberAvatar: null,
+      errors: "",
+      formattedValue: "",
+    };
+    
+    this.avatarInputRef = React.createRef(); // Create a ref for the avatar input
+
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeInformation = this.handleChangeInformation.bind(this);
     this.handleChangePhone = this.handleChangePhone.bind(this);
@@ -20,124 +35,206 @@ class UpdateMember extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount(){
-    axios.get(MyGlobleSetting.url + `/api/members/${this.props.params.id}`)
-    .then(response => {
-      this.setState({ memberName: response.data.name, memberInformation: response.data.information, memberPhone: response.data.phone, formattedValue: response.data.date_of_birth.split(" ")[0], memberPosition: response.data.position, memberGender: response.data.gender, memberAvatar: response.data.avatar });
-      this.state.memberDob = new Date(this.state.formattedValue);
-      this.setState({memberDob: this.state.memberDob.toISOString()});
-      console.log(this.state.formattedValue, this.state.memberDob);
-    }).catch(error => {
-      this.setState({
-        errors: error.response.data.errors
+  componentDidMount() {
+    let memberId = this.props.params ? this.props.params.id : undefined;
+    if (!memberId) {
+      console.error('Member ID is not defined');
+      console.log(this.props.params);
+      memberId = MyGlobleSetting.getID(memberId);
+    }
+    console.log(memberId);
+    axios
+      .get(MyGlobleSetting.url + `/api/members/${memberId}`)
+      .then((response) => {
+        this.setState({
+          memberName: response.data.name,
+          memberInformation: response.data.information,
+          memberPhone: response.data.phone,
+          formattedValue: moment(response.data.date_of_birth.split(" ")[0]),
+          memberDob: moment(response.data.date_of_birth),
+          memberPosition: response.data.position,
+          memberGender: response.data.gender,
+          memberAvatar: response.data.avatar,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          errors: error.response.data.errors,
+        });
       });
+  }
+
+  handleChangeName(e) {
+    this.setState({
+      memberName: e.target.value,
     });
   }
-  handleChangeName(e){
+  
+  handleChangeInformation(e) {
     this.setState({
-      memberName: e.target.value
-    })
+      memberInformation: e.target.value,
+    });
   }
-  handleChangeInformation(e){
+
+  handleChangePhone(e) {
     this.setState({
-      memberInformation: e.target.value
-    })
+      memberPhone: e.target.value,
+    });
   }
-  handleChangePhone(e){
-    this.setState({
-      memberPhone: e.target.value
-    })
-  }
-  handleChangeDob(e, formattedValue){
+
+  handleChangeDob(e, formattedValue) {
     this.setState({
       memberDob: e,
-      formattedValue: formattedValue
-    })
+      formattedValue: formattedValue,
+    });
   }
-  handleChangePosition(e){
+
+  handleChangePosition(e) {
     this.setState({
-      memberPosition: e.target.value
-    })
+      memberPosition: e.target.value,
+    });
   }
-  handleChangeGender(e){
+
+  handleChangeGender(e) {
     this.setState({
-      memberGender: e.target.value
-    })
+      memberGender: e.target.value,
+    });
   }
-  handleChangeAvatar(e){
-    $('#img_avatar').remove();
+
+  handleChangeAvatar(e) {
+    $("#img_avatar").remove();
     this.setState({
-      memberAvatar: e.target.files[0]
-    })
+      memberAvatar: e.target.files[0],
+    });
   }
 
   handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name',this.state.memberName);
-    formData.append('information',this.state.memberInformation);
-    formData.append('avatar',this.state.memberAvatar);
-    formData.append('dob',this.state.formattedValue);
-    formData.append('phone',this.state.memberPhone);
-    formData.append('position',this.state.memberPosition);
-    formData.append('gender',this.state.memberGender);
-    formData.append('_method', 'PUT');
+    formData.append("name", this.state.memberName);
+    formData.append("information", this.state.memberInformation);
+    formData.append("avatar", this.state.memberAvatar);
+    formData.append("dob", this.state.formattedValue);
+    formData.append("phone", this.state.memberPhone);
+    formData.append("position", this.state.memberPosition);
+    formData.append("gender", this.state.memberGender);
+    formData.append("_method", "PUT");
     const config = {
-         'Content-Type': 'multipart/form-data'
-    }
-    let uri = MyGlobleSetting.url + '/api/members/' + this.props.params.id;
-    axios.post(uri, formData, config).then((response) => {
-      browserHistory.push('/members?ACTION=2');
-    }).catch(error => {
-      this.setState({
-        errors: error.response.data.errors
+      "Content-Type": "multipart/form-data",
+    };
+    let uri = MyGlobleSetting.url + "/api/members/" + this.props.params.id;
+    axios
+      .post(uri, formData, config)
+      .then((response) => {
+        browserHistory.push("/members?ACTION=2");
+      })
+      .catch((error) => {
+        this.setState({
+          errors: error.response.data.errors,
+        });
       });
-    });
   }
-  render(){
+
+  render() {
     return (
       <div className="invoice">
-        <form onSubmit={this.handleSubmit} className="form-horizontal" >
+        <form onSubmit={this.handleSubmit} className="form-horizontal">
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="name">Name:</label>
+            <label className="control-label col-sm-2" htmlFor="name">
+              Name:
+            </label>
             <div className="col-sm-10">
-              <input type="text" value={this.state.memberName} className="form-control" id="name" onChange={this.handleChangeName} name="name" placeholder="Enter name" />
+              <input
+                type="text"
+                value={this.state.memberName}
+                className="form-control"
+                id="name"
+                onChange={this.handleChangeName}
+                name="name"
+                placeholder="Enter name"
+              />
               <p className="error">{this.state.errors.name}</p>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="name">Avatar:</label>
+            <label className="control-label col-sm-2" htmlFor="name">
+              Avatar:
+            </label>
             <div className="col-sm-10">
-              <img src={this.state.memberAvatar} className="img-rounded" id="img_avatar"/>
-              <input type="file" onChange={this.handleChangeAvatar} ref={this.state.memberAvatar} className="form-control" id="avatar" name="avatar"/>
+              <img
+                src={this.state.memberAvatar}
+                className="img-rounded avt-thumbnail"
+                id="img_avatar"
+              />
+              <input
+                type="file"
+                onChange={this.handleChangeAvatar}
+                ref={this.avatarInputRef} // Using ref object
+                className="form-control"
+                id="avatar"
+                name="avatar"
+              />
               <p className="error">{this.state.errors.avatar}</p>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="information">Information:</label>
+            <label className="control-label col-sm-2" htmlFor="information">
+              Information:
+            </label>
             <div className="col-sm-10">
-              <textarea className="form-control" id="information" onChange={this.handleChangeInformation} name="information" value={this.state.memberInformation}></textarea>
+              <textarea
+                className="form-control"
+                id="information"
+                onChange={this.handleChangeInformation}
+                name="information"
+                value={this.state.memberInformation}
+              ></textarea>
               <p className="error">{this.state.errors.information}</p>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="phone">Phone:</label>
+            <label className="control-label col-sm-2" htmlFor="phone">
+              Phone:
+            </label>
             <div className="col-sm-10">
-              <input type="text" onChange={this.handleChangePhone} value={this.state.memberPhone} className="form-control" id="phone" name="phone" placeholder="Enter Phone" />
+              <input
+                type="text"
+                onChange={this.handleChangePhone}
+                value={this.state.memberPhone}
+                className="form-control"
+                id="phone"
+                name="phone"
+                placeholder="Enter Phone"
+              />
               <p className="error">{this.state.errors.phone}</p>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="date_of_birth">Date of birth:</label>
+            <label className="control-label col-sm-2" htmlFor="date_of_birth">
+              Date of birth:
+            </label>
             <div className="col-sm-10">
-              <DatePicker id="example-datepicker" onChange={this.handleChangeDob} dateFormat="YYYY-MM-DD" value={this.state.memberDob}/>
+              <DatePicker
+                id="example-datepicker"
+                onChange={this.handleChangeDob}
+                selected={this.state.memberDob}
+                className="form-control"
+              />
               <p className="error">{this.state.errors.dob}</p>
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="position">Position:</label>
+            <label className="control-label col-sm-2" htmlFor="position">
+              Position:
+            </label>
             <div className="col-sm-10">
-              <select className="form-control" value={this.state.memberPosition} name="position" id="position" onChange={this.handleChangePosition}>
+              <select
+                className="form-control"
+                value={this.state.memberPosition}
+                name="position"
+                id="position"
+                onChange={this.handleChangePosition}
+              >
                 <option value="intern">intern</option>
                 <option value="junior">junior</option>
                 <option value="senior">senior</option>
@@ -150,9 +247,17 @@ class UpdateMember extends Component {
             </div>
           </div>
           <div className="form-group">
-            <label className="control-label col-sm-2" htmlFor="gender">Gender:</label>
+            <label className="control-label col-sm-2" htmlFor="gender">
+              Gender:
+            </label>
             <div className="col-sm-10">
-              <select className="form-control" name="gender" value={this.state.memberGender} onChange={this.handleChangeGender} id="gender">
+              <select
+                className="form-control"
+                name="gender"
+                value={this.state.memberGender}
+                onChange={this.handleChangeGender}
+                id="gender"
+              >
                 <option value="1">male</option>
                 <option value="2">female</option>
               </select>
@@ -161,12 +266,15 @@ class UpdateMember extends Component {
           </div>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
-              <button type="submit" className="btn btn-default">Update</button>
+              <button type="submit" className="btn btn-default btn-primary">
+                Update
+              </button>
             </div>
           </div>
         </form>
       </div>
-    )
+    );
   }
 }
+
 export default UpdateMember;

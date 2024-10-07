@@ -1,7 +1,9 @@
 require('./bootstrap');
+window.$ = window.jQuery = require('jquery');
+
 import React from 'react';
-import { render } from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
+import { createRoot } from 'react-dom/client'; // Updated import
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Importing Routes
 
 import DisplayMember from './components/DisplayMember';
 import CreateMember from './components/CreateMember';
@@ -12,17 +14,25 @@ import UpdateProject from './components/UpdateProject';
 import AssignMember from './components/AssignMember';
 import DetailProject from './components/DetailProject';
 
-render(
-    <Router history={browserHistory}>
-        <Route path="/" component={DisplayMember} >
-        </Route>
-        <Route path="/members" component={DisplayMember} />
-        <Route path="/members/new" component={CreateMember} />
-        <Route path="/members/edit/:id" component={UpdateMember} />
-        <Route path="/projects" component={DisplayProject} />
-        <Route path="/projects/new" component={CreateProject} />
-        <Route path="/projects/edit/:id" component={UpdateProject} />
-        <Route path="/projects/assign" component={AssignMember} />
-        <Route path="/projects/detail/:id" component={DetailProject} />
-    </Router>,
-    document.getElementById('crud-app'));
+// Get the root element
+const container = document.getElementById('crud-app');
+
+// Create a root
+const root = createRoot(container);
+
+// Render the app
+root.render(
+    <BrowserRouter>
+        <Routes> {/* Use Routes instead of Router */}
+            <Route path="/" element={<DisplayMember />} />
+            <Route path="/members" element={<DisplayMember />} />
+            <Route path="/members/new" element={<CreateMember />} />
+            <Route path="/members/edit/:id" element={<UpdateMember />} />
+            <Route path="/projects" element={<DisplayProject />} />
+            <Route path="/projects/new" element={<CreateProject />} />
+            <Route path="/projects/edit/:id" element={<UpdateProject />} />
+            <Route path="/projects/assign" element={<AssignMember />} />
+            <Route path="/projects/detail/:id" element={<DetailProject />} />
+        </Routes>
+    </BrowserRouter>
+);

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Member;
 use App\Project;
 use App\Rules\Older60YearOlds;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class MemberController extends Controller
 {
@@ -54,10 +56,17 @@ class MemberController extends Controller
         public function store(Request $request)
         {
             $request->validate(self::RULES);
+            $dateString = $request->get('dob');
+            $date = Carbon::createFromFormat('D M d Y H:i:s e', $dateString);
+
+            // Check if date conversion was successful
+            if (!$date) {
+                return response()->json(['error' => 'Invalid date format.'], 400);
+            }
             $member = new Member([
                 'name' => $request->get('name'),
                 'information' => $request->get('information') ? $request->get('information') : '',
-                'date_of_birth' => date($request->get('dob')),
+                'date_of_birth' => $date,
                 'position' => $request->get('position'),
                 'phone' => $request->get('phone'),
                 'gender' => $request->get('gender'),
@@ -90,6 +99,7 @@ class MemberController extends Controller
         public function show($id)
         {
             $member = Member::find($id);
+            // $member->avatar = Storage::url($member->avatar);
             return response()->json($member);
         }
 
@@ -117,9 +127,17 @@ class MemberController extends Controller
             $request->validate(self::RULES);
             $member = Member::find($id);
             if ($member) {
+                $dateString = $request->get('dob');
+                $date = Carbon::createFromFormat('D M d Y H:i:s e', $dateString);
+
+                // Check if date conversion was successful
+                if (!$date) {
+                    return response()->json(['error' => 'Invalid date format.'], 400);
+                }
+
                 $member->name = $request->get('name');
                 $member->information = $request->get('information');
-                $member->date_of_birth =date($request->get('dob'));
+                $member->date_of_birth = $date;
                 $member->position = $request->get('position');
                 $member->phone = $request->get('phone');
                 $member->gender = $request->get('gender');

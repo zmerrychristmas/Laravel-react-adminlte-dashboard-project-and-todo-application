@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
-        "jeroennoten/laravel-adminlte": "^1.23",
+        "jeroennoten/laravel-adminlte": "^2.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0"
     },
@@ -53,6 +53,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true,
+            "symfony/thanks": true
+        }
     }
 }

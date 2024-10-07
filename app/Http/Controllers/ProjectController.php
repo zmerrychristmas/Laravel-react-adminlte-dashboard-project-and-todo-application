@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Project;
 use App\Member;
-
+use DateTime;
 
 class ProjectController extends Controller
 {
@@ -55,10 +55,15 @@ class ProjectController extends Controller
         public function store(Request $request)
         {
             $request->validate(self::RULES);
+            $deadline = $request->get('deadline');
+            $dateObject = new DateTime($deadline);
+
+            // Format the date object to a standard format like "Y-m-d H:i:s" for SQL databases
+            $formattedDate = $dateObject->format('Y-m-d H:i:s');
             $project = new Project([
                 'name' => $request->get('name'),
                 'information' => $request->get('information'),
-                'deadline' => $request->get('deadline'),
+                'deadline' => $formattedDate,
                 'type' => $request->get('type'),
                 'status' => $request->get('status')
                 ]);

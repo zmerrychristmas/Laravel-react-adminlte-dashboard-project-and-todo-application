@@ -36,3 +36,14 @@ $input-color-placeholder: lighten($text-color, 30%);
 
 // Panels
 $panel-default-heading-bg: #fff;
+
+.avt-thumbnail {
+	max-height: 100px;
+}
+
+.react-datepicker-wrapper {
+	width: 100%;
+}
+.react-datepicker__input-container {
+	width: 100%;
+}

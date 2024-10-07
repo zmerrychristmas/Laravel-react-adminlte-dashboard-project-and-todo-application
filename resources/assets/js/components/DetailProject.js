@@ -1,133 +1,76 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router';
-import TableMemberAssign from './TableMemberAssign';
+import { Link } from 'react-router-dom'; // Updated to use react-router-dom
+import TableProjectRow from './TableProjectRow';
 import MyGlobleSetting from './MyGlobleSetting';
+
 class DetailProject extends Component {
   constructor(props) {
-   super(props);
-   this.state = {value: '', project: '', member_roles: '', messages: ''};
- }
- componentDidMount(){
-  axios.get(MyGlobleSetting.url + `/api/projects/detail/${this.props.params.id}`)
-  .then(response => {
-    this.setState({ project: response.data.project, member_roles: response.data.member_roles, messages: response.data.messages });
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
- }
-  projectStatus(status)
-  {
-    switch(status) {
-      case '1': {
-        return 'planend';
-      }
-      case '2': {
-        return 'onhold';
-      }
-      case '3': {
-        return 'doing';
-      }
-      case '4': {
-        return 'done';
-      }
-      case '5': {
-        return 'cancelled';
-      }
-      default : {
-        return status;
-      }
-    }
+    super(props);
+    this.state = { value: '', projects: [], messages: [], error: null };
+    this._isMounted = false; // Flag to track component mount status
   }
 
-date_date(d)
-{
-  d = d.split(" ")[0];
-  return d;
-}
- messages() {
-   if(this.state.messages instanceof Array){
-     return this.state.messages.map((object, i) => {
-       return <div className="alert alert-success" key={i}>
-                <a href="#" className="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Success!</strong> {object}.
-              </div>;
-     })
-   }
- }
- tabRow(){
-   if(this.state.member_roles instanceof Array){
-     return this.state.member_roles.map((object, i) => {
-       return <TableMemberAssign obj={object} key={i} />;
-     })
-   }
- }
- render(){
-  return (
-    <section className="invoice">
-      <div className="row">
-        <div className="col-xs-12">
-          <h2 className="page-header">
-            <i className="fa fa-home"></i> {this.state.project.name}.
-            <small className="pull-right">Date: {this.state.project.created_at}</small>
-          </h2>
-        </div>
-      </div>
+  componentDidMount() {
+    this._isMounted = true;
+    const url_browser = MyGlobleSetting.url + '/api/projects';
+    
+    axios.get(url_browser)
+      .then(response => {
+        if (this._isMounted) {
+          this.setState({ projects: response.data.projects, messages: response.data.messages });
+        }
+      })
+      .catch(error => {
+        if (this._isMounted) {
+          this.setState({ error: error.message });
+          console.error('API call error:', error);
+        }
+      });
+  }
 
-      <div className="row invoice-info">
-        <div className="col-sm-2 invoice-col">
-          <strong>Information:</strong>
+  componentWillUnmount() {
+    this._isMounted = false; // Clean up
+  }
+
+  render() {
+    const { projects, messages, error } = this.state;
+
+    return (
+      <div className="invoice">
+        <div className="row">
+          <div className="col-md-10"></div>
+          <div className="col-md-2">
+            <Link to="/projects/new" className="btn btn-medium btn-default">New Project</Link>
+          </div>
         </div>
-        <div className="col-sm-10 invoice-col">
-          {this.state.project.information}
+        <br />
+        <div className="messages">
+          {messages && messages.map((msg, i) => (
+            <div className="alert alert-success" key={i}>
+              <strong>Success!</strong> {msg}
+            </div>
+          ))}
+          {error && <div className="alert alert-danger"><strong>Error:</strong> {error}</div>}
         </div>
-        <div className="col-sm-2 invoice-col">
-          <strong>Deadline:</strong>
-        </div>
-        <div className="col-sm-10 invoice-col">
-          {this.state.project.deadline}
-        </div>
-        <div className="col-sm-2 invoice-col">
-          <strong>Type:</strong>
-        </div>
-        <div className="col-sm-10 invoice-col">
-          {this.state.project.type}
-        </div>
-        <div className="col-sm-2 invoice-col">
-          <strong>Status:</strong>
-        </div>
-        <div className="col-sm-10 invoice-col">
-          {this.projectStatus(this.state.project.status)}
-        </div>
-      </div>
-      <div className="row no-print">
-        <div className="col-xs-6">
-        <h3>Members on project:</h3>
-        </div>
-        <div className="col-xs-6">
-          <Link type="button" className="btn btn-primary pull-right" to={"/projects/assign?pid=" + this.state.project.id}>Add New
-          </Link>
-        </div>
-      </div>
-         <div className="row">
-        <div className="col-xs-12 table-responsive">
-          <table className="table table-striped table-responsive">
-            <thead>
+        <table className="table table-hover table-bordered table-striped">
+          <thead>
             <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Action</th>
+              <td>Name</td>
+              <td width="30%">Information</td>
+              <td>Deadline</td>
+              <td>Type</td>
+              <td>Status</td>
+              <td>Action</td>
             </tr>
-            </thead>
-            <tbody>
-              {this.tabRow()}
-            </tbody>
-          </table>
-        </div>
+          </thead>
+          <tbody>
+            {projects.map((project, i) => <TableProjectRow obj={project} key={i} />)}
+          </tbody>
+        </table>
       </div>
-    </section>
-    )
+    );
   }
 }
+
 export default DetailProject;
