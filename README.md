@@ -1,4 +1,4 @@
-# Laravel React AdminLTE Project management example code
+# Laravel React AdminLTE Project and Todo management example code
 
 Admin Dashboard using Laravel, AdminLTE and ReactJs to coded a website with purpose using in Project management, due to example code for tutorial, this sample code cover case during code daily of a full stack developer. In this project, this was created from a long time project, so I using Laravel 5.x and update to React@lastest. I will update from Laravel 5.x to Laravel lastest in near future time and update in readme if possible.
 
