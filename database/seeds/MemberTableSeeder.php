@@ -12,26 +12,26 @@ class MemberTableSeeder extends Seeder
         App\Member::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('member')->delete();
-        $name = 'Nguyen Kim';
+        $name = 'Test member 1';
         Member::create(array(
             'name' => $name,
             'information' => 'test',
-            'date_of_birth' => '1992-09-27',
+            'date_of_birth' => '1900-09-25',
             'position' => 'intern',
-            'phone' => '0965841492',
+            'phone' => '0123456789',
             'gender' => 1,
-            'avatar' => 'storage/images/default.png'
+            'avatar' => '/storage/images/default.png'
         ));
 
-        $name = 'Nguyen Phuc';
+        $name = 'Test member 2';
         Member::create(array(
             'name' => $name,
             'information' => 'test',
-            'date_of_birth' => '1992-09-27',
+            'date_of_birth' => '1900-09-25',
             'position' => 'intern',
-            'phone' => '0965841492',
+            'phone' => '0123456789',
             'gender' => 1,
-            'avatar' => 'storage/images/default.png'
+            'avatar' => '/storage/images/default.png'
         ));
     }
 }
